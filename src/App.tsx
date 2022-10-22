@@ -5,7 +5,7 @@ import type { SetupWorkerApi } from "msw";
 declare global {
   interface Window {
     __MSWJS_DEVTOOLS_EXTENSION: {
-      msw: SetupWorkerApi;
+      configure: (msw: SetupWorkerApi) => void;
     };
   }
 }

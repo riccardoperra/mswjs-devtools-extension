@@ -1,8 +1,36 @@
+# MockServiceWorker DevTools extension
+
+![img.png](img.png)
+
+## 🚧 This project is currently in early development 🚧
+
+Chrome Developer Tools extension for debugging and configuring MockServiceWorker.
+
 ## Usage
+
+```ts
+import { setupWorker, SetupWorkerApi } from "msw";
+import { handlers } from "./handlers";
+
+export const worker = setupWorker(...handlers);
+
+declare global {
+  interface Window {
+    __MSWJS_DEVTOOLS_EXTENSION: {
+      configure: (msw: SetupWorkerApi) => void;
+    };
+  }
+}
+
+if (window.__MSWJS_DEVTOOLS_EXTENSION) {
+  window.__MSWJS_DEVTOOLS_EXTENSION.configure(worker);
+}
+```
 
 Those templates dependencies are maintained via [pnpm](https://pnpm.io) via `pnpm up -Lri`.
 
-This is the reason you see a `pnpm-lock.yaml`. That being said, any package manager will work. This file can be safely be removed once you clone a template.
+This is the reason you see a `pnpm-lock.yaml`. That being said, any package manager will work. This file can be safely
+be removed once you clone a template.
 
 ```bash
 $ npm install # or pnpm install or yarn install
