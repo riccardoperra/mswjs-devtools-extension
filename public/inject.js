@@ -12,9 +12,10 @@ window.__MSWJS_DEVTOOLS_EXTENSION = {
    */
   async configure(msw) {
     this.msw = msw;
-
+    let initialized = false;
     const nativeMswStop = msw.stop;
     msw.stop = () => {
+      initialized = false;
       nativeMswStop();
       window.postMessage(
         {
@@ -27,6 +28,7 @@ window.__MSWJS_DEVTOOLS_EXTENSION = {
 
     const nativeMswStart = msw.start;
     msw.start = (options, ...args) => {
+      initialized = true;
       nativeMswStart(options, ...args);
       window.postMessage(
         {
@@ -94,7 +96,10 @@ window.__MSWJS_DEVTOOLS_EXTENSION = {
               {
                 source: "mswjs-script",
                 type: "MSW_UPDATE_HANDLERS",
-                payload: { handlers: updatedHandlers },
+                payload: {
+                  handlers: updatedHandlers,
+                  initialized: initialized,
+                },
               },
               "*"
             );
@@ -103,15 +108,16 @@ window.__MSWJS_DEVTOOLS_EXTENSION = {
       }
     });
 
-    init(msw);
+    init(msw, initialized);
   },
 };
 
 /**
  *
  * @param {import('msw').SetupWorkerApi} msw
+ * @param {boolean} initialized
  */
-function init(msw) {
+function init(msw, initialized) {
   handlerList = msw.listHandlers();
   const handlers = buildHandlers(handlerList);
 
@@ -119,7 +125,7 @@ function init(msw) {
     {
       source: "mswjs-script",
       type: "MSW_INIT",
-      payload: { handlers },
+      payload: { handlers, initialized },
     },
     "*"
   );

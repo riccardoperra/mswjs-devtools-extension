@@ -38,8 +38,11 @@ const App: Component = () => {
     if (message.source === "mswjs-script") {
       switch (message.type) {
         case "MSW_INIT": {
-          const { handlers } = message.payload;
+          const { handlers, initialized } = message.payload;
           setHandlers(handlers);
+          if (initialized) {
+            setEnabled(initialized);
+          }
           break;
         }
         case "MSW_START": {
