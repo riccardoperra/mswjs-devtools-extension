@@ -1,14 +1,5 @@
 import { Component, createSignal, For, onMount } from "solid-js";
 import styles from "./App.module.css";
-import type { SetupWorkerApi } from "msw";
-
-declare global {
-  interface Window {
-    __MSWJS_DEVTOOLS_EXTENSION: {
-      configure: (msw: SetupWorkerApi) => void;
-    };
-  }
-}
 
 function sendContent<T>(data: T) {
   chrome.tabs.query(

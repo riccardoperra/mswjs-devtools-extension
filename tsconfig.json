@@ -8,10 +8,22 @@
     "esModuleInterop": true,
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
-    "types": ["vite/client", "@types/chrome"],
+    "types": [
+      "vite/client",
+      "@types/chrome",
+    ],
     "noEmit": true,
     "isolatedModules": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "typeRoots": [
+      "./global.d.ts"
+    ]
   },
-  "include": ["src/**/*.ts", "background/**", "content/**", "devtools/**"]
+  "include": [
+    "background/**",
+    "bridge/**",
+    "content/**",
+    "devtools/**",
+    "global.d.ts"
+  ]
 }

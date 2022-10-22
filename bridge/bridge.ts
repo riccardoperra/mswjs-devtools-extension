@@ -1,15 +1,10 @@
-/**
- * @type {ReadonlyArray<import('msw').RequestHandler>}
- */
-let handlerList;
+import { RequestHandler, SetupWorkerApi } from "msw";
+import { MswDevtoolsExtension } from "../shared/extension";
 
-window.__MSWJS_DEVTOOLS_EXTENSION = {
+let handlerList: readonly RequestHandler[];
+
+const __MSWJS_DEVTOOLS_EXTENSION: MswDevtoolsExtension = {
   msw: undefined,
-
-  /**
-   *
-   * @param msw {import('msw').SetupWorkerApi}
-   */
   async configure(msw) {
     this.msw = msw;
     let initialized = false;
@@ -29,7 +24,7 @@ window.__MSWJS_DEVTOOLS_EXTENSION = {
     const nativeMswStart = msw.start;
     msw.start = (options, ...args) => {
       initialized = true;
-      nativeMswStart(options, ...args);
+      const startReturn = nativeMswStart(options, ...args);
       window.postMessage(
         {
           source: "mswjs-script",
@@ -37,6 +32,7 @@ window.__MSWJS_DEVTOOLS_EXTENSION = {
         },
         "*"
       );
+      return startReturn;
     };
 
     window.addEventListener("message", (event) => {
@@ -49,7 +45,7 @@ window.__MSWJS_DEVTOOLS_EXTENSION = {
             return msw.stop();
           }
           case "MSW_INIT": {
-            init(msw);
+            init(msw, initialized);
             break;
           }
           case "MSW_MOCK_UPDATE": {
@@ -112,12 +108,9 @@ window.__MSWJS_DEVTOOLS_EXTENSION = {
   },
 };
 
-/**
- *
- * @param {import('msw').SetupWorkerApi} msw
- * @param {boolean} initialized
- */
-function init(msw, initialized) {
+Object.assign(window, { __MSWJS_DEVTOOLS_EXTENSION });
+
+function init(msw: SetupWorkerApi, initialized: boolean) {
   handlerList = msw.listHandlers();
   const handlers = buildHandlers(handlerList);
 
@@ -131,12 +124,7 @@ function init(msw, initialized) {
   );
 }
 
-/**
- *
- * @param {ReadonlyArray<import('msw').RestHandler>} handlers
- * @returns {*}
- */
-function buildHandlers(handlers) {
+function buildHandlers(handlers: readonly RequestHandler[]) {
   return handlers.map((handler, index) => {
     return {
       id: index,

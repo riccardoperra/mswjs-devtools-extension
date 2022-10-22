@@ -58,7 +58,7 @@ chrome.runtime.onMessage.addListener((event) => {
   }
 });
 
-const src = chrome.runtime.getURL(`inject.js`);
+const src = chrome.runtime.getURL(`bridge/bridge.ts.js`);
 const scriptElement = document.createElement("script");
 scriptElement.src = src;
 document.body.append(scriptElement);

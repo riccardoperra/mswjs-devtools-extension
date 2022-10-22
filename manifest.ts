@@ -30,6 +30,10 @@ export default defineManifest((env) => ({
       js: ["content/content.ts"],
       run_at: "document_start",
     },
+    {
+      matches: ["*://*/*"],
+      js: ["bridge/bridge.ts"],
+    },
   ],
   externally_connectable: {
     ids: ["*"],
@@ -43,7 +47,7 @@ export default defineManifest((env) => ({
   },
   web_accessible_resources: [
     {
-      resources: ["inject.js"],
+      resources: ["bridge/bridge.ts.js"],
       matches: ["*://*/*"],
     },
   ],
