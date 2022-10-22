@@ -1,5 +1,7 @@
 import { Component, createSignal, For, onMount } from "solid-js";
 import styles from "./App.module.css";
+import { version } from "../package.json";
+import { Footer } from "./Footer";
 
 function sendContent<T>(data: T) {
   chrome.tabs.query(
@@ -20,6 +22,7 @@ interface Handler {
 }
 
 const App: Component = () => {
+  const devToolsVersion = version;
   const [enabled, setEnabled] = createSignal(false);
   const [handlers, setHandlers] = createSignal<Handler[]>([]);
 
@@ -65,7 +68,9 @@ const App: Component = () => {
 
   return (
     <div class={styles.App}>
-      <div class="bg-base-300 flex items-center h-[46px] px-4">
+      <div
+        class={`bg-base-300 flex items-center h-[46px] px-4 ${styles.Header}`}
+      >
         <div class="flex">
           <div class="form-control">
             <label class="label cursor-pointer">
@@ -119,6 +124,8 @@ const App: Component = () => {
           </For>
         </div>
       </fieldset>
+
+      <Footer version={version} />
     </div>
   );
 };
