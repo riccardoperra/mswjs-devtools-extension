@@ -10,6 +10,7 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@changesets/cli": "^2.25.0",
     "@crxjs/vite-plugin": "^1.0.14",
     "@tailwindcss/typography": "^0.5.7",
     "@types/chrome": "^0.0.199",

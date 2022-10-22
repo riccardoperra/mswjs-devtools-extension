@@ -1,10 +1,18 @@
-# MockServiceWorker DevTools extension
+<br />
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/mswjs/msw/main/media/msw-logo.svg" width="100" alt="Mock Service Worker logo" />
+</p>
+
+<h1 align="center">Mock Service Worker Developer Tools Extension</h1>
+<p align="center"><strong>MSW DevTool</strong> is a Chrome Developer Tools extension for debugging and configuring Mock Service Worker in your application.</p>
+
+<br />
+
 
 ![img.png](img.png)
 
 ## 🚧 This project is currently in early development 🚧
-
-Chrome Developer Tools extension for debugging and configuring MockServiceWorker.
 
 ## Usage
 
