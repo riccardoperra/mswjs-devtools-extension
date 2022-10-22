@@ -1,5 +1,6 @@
 import { RequestHandler, SetupWorkerApi } from "msw";
 import { MswDevtoolsExtension } from "../shared/extension";
+import { logHandler } from "./logHandler";
 
 let handlerList: readonly RequestHandler[];
 
@@ -65,26 +66,15 @@ const __MSWJS_DEVTOOLS_EXTENSION: MswDevtoolsExtension = {
               : "[rest]";
 
             if (skip) {
-              const message = `${pragma} ${header} disabled`;
-              console.groupCollapsed(
-                `%c${message}`,
-                "color:orange;font-weight:bold;"
-              );
-              if (callFrame) {
-                console.log(`Declaration: ${callFrame}`);
-              }
-              console.log("Handler:", handler);
-              console.groupEnd();
+              logHandler(handler, {
+                color: "#e3db2a",
+                description: "Disabled",
+              });
             } else {
-              const message = `${pragma} ${header} enabled`;
-              console.groupCollapsed(
-                `%c${message}`,
-                "color:green;font-weight:bold;"
-              );
-              if (callFrame) {
-                console.log(`Declaration: ${callFrame}`);
-              }
-              console.groupEnd();
+              logHandler(handler, {
+                color: "#34d537",
+                description: "Enabled",
+              });
             }
 
             const updatedHandlers = buildHandlers(handlerList);

@@ -66,10 +66,9 @@ const App: Component = () => {
   return (
     <div class={styles.App}>
       <div class="bg-base-300 flex items-center h-[46px] px-4">
-        <div class="w-3/6">
+        <div class="flex">
           <div class="form-control">
             <label class="label cursor-pointer">
-              <span class="label-text font-bold">Enable MockServiceWorker</span>
               <input
                 type="checkbox"
                 class="toggle"
@@ -82,6 +81,9 @@ const App: Component = () => {
                   }
                 }}
               />
+              <span class="ml-4 label-text font-bold">
+                Enable MockServiceWorker
+              </span>
             </label>
           </div>
         </div>

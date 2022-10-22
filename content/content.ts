@@ -61,6 +61,7 @@ chrome.runtime.onMessage.addListener((event) => {
 const src = chrome.runtime.getURL(`bridge/bridge.ts.js`);
 const scriptElement = document.createElement("script");
 scriptElement.src = src;
+scriptElement.type = "module";
 document.body.append(scriptElement);
 
 export {};

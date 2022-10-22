@@ -19,7 +19,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         panel: "./index.html",
-        bridge: "bridge/bridge.ts",
+        bridge: "bridge/bridge.ts.js",
       },
     },
   },
