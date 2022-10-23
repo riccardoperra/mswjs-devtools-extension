@@ -9,11 +9,11 @@ import {
 } from "solid-js";
 import styles from "./App.module.css";
 import { version } from "../package.json";
-import { Footer } from "./Footer";
 import { devtoolsMessenger } from "./devtoolsMessenger";
 import { NotDetected } from "./components/NotDetected";
 import { LoadingPage } from "./components/LoadingPage";
 import { SerializedMockConfig, SerializedRouteHandler } from "../shared/types";
+import { Footer } from "./Footer";
 
 const DevtoolPanel = lazy(() =>
   import("./devtool-ui/DevtoolPanel").then((m) => ({
@@ -143,11 +143,10 @@ const App: Component = () => {
                 },
               }}
             />
-
-            <Footer version={devToolsVersion} />
           </Show>
         </Show>
       </Suspense>
+      <Footer version={devToolsVersion} />
     </div>
   );
 };

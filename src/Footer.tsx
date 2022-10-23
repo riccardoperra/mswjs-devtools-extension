@@ -14,6 +14,7 @@ export function Footer(props: ParentProps<FooterProps>) {
       <span>
         <a
           target={"_blank"}
+          class={"link"}
           href={"https://github.com/riccardoperra/mswjs-devtools-extension"}
         >
           Github

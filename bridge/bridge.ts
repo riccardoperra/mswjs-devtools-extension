@@ -7,10 +7,13 @@ import { MockConfig, SerializedRouteHandler } from "../shared/types";
 import { toTitleCase } from "../shared/toTitleCase";
 
 let handlerList: readonly RequestHandler[];
+let initializedFromConsumer: boolean = false;
 
 const __MSWJS_DEVTOOLS_EXTENSION: MswDevtoolsExtension = {
   msw: undefined,
+  detected: undefined,
   async configure(msw, mocks) {
+    initializedFromConsumer = true;
     this.msw = msw;
 
     let initialized = false;
@@ -47,6 +50,7 @@ const __MSWJS_DEVTOOLS_EXTENSION: MswDevtoolsExtension = {
         setTimeout(
           () => {
             const detected = !!__MSWJS_DEVTOOLS_EXTENSION.msw;
+            this.detected = detected;
             bridgeMessenger.dispatch("BRIDGE_CHECK_MSW", { detected });
             if (detected) {
               init(msw, initialized, mocks);
