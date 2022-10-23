@@ -1,7 +1,8 @@
-import { For, VoidProps } from "solid-js";
+import { createSignal, For, Show, VoidProps } from "solid-js";
 import { Checkbox } from "../../../components/Checkbox";
 import styles from "../../DevtoolPanel.module.css";
 import { SerializedRouteHandler } from "../../../../shared/types";
+import { CreateRouteHandlerForm } from "./CreateRouteHandlerForm";
 
 interface RoutesProps {
   routes: SerializedRouteHandler[];
@@ -9,11 +10,18 @@ interface RoutesProps {
 }
 
 export function RoutesHandler(props: VoidProps<RoutesProps>) {
+  const [showCreateForm, setShowCreateForm] = createSignal(false);
+
   return (
-    <>
+    <div>
       <div class="px-4 my-3 flex items-center justify-between">
         <h1 class="text-lg font-bold">Available routes</h1>
-        <button class="btn btn-primary btn-sm">Add new</button>
+        <button
+          class="btn btn-primary btn-sm"
+          onClick={() => setShowCreateForm(true)}
+        >
+          Add new
+        </button>
       </div>
       <div class={styles.HandlersList}>
         <For each={props.routes}>
@@ -38,6 +46,9 @@ export function RoutesHandler(props: VoidProps<RoutesProps>) {
           }}
         </For>
       </div>
-    </>
+      <Show when={showCreateForm()}>
+        <CreateRouteHandlerForm onClose={() => setShowCreateForm(false)} />
+      </Show>
+    </div>
   );
 }

@@ -1,4 +1,4 @@
-import { RequestHandler, SetupWorkerApi } from "msw";
+import { RequestHandler, rest, SetupWorkerApi } from "msw";
 import { MswDevtoolsExtension } from "../shared/extension";
 import { logHandler } from "./logHandler";
 import { bridgeMessenger } from "./bridgeMessenger";
@@ -34,6 +34,12 @@ const __MSWJS_DEVTOOLS_EXTENSION: MswDevtoolsExtension = {
         "content-script"
       );
       return startReturn;
+    };
+
+    const nativeMswUse = msw.use;
+    msw.use = (...args) => {
+      nativeMswUse(...args);
+      init(msw, true, mocks);
     };
 
     bridgeMessenger.on(
@@ -115,6 +121,19 @@ const __MSWJS_DEVTOOLS_EXTENSION: MswDevtoolsExtension = {
       },
       "content-script"
     );
+
+    bridgeMessenger.on("DEVTOOLS_CREATE_HANDLER", ({ payload }) => {
+      const { method, url, response } = payload;
+
+      const resolver = rest[method.toLowerCase() as keyof typeof rest](
+        url,
+        (req, res, ctx) => {
+          return res(ctx.json(response));
+        }
+      );
+
+      msw.use(resolver);
+    });
 
     init(msw, initialized, mocks);
   },

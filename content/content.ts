@@ -1,5 +1,5 @@
 import { contentMessenger } from "./contentMessenger";
-
+import bridge from "../bridge/bridge?url";
 contentMessenger.on(
   "DEVTOOLS_MSW_START",
   () => {
@@ -40,6 +40,14 @@ contentMessenger.on(
       data.payload,
       "bridge"
     );
+  },
+  "devtools"
+);
+
+contentMessenger.on(
+  "DEVTOOLS_CREATE_HANDLER",
+  ({ payload }) => {
+    contentMessenger.dispatch("DEVTOOLS_CREATE_HANDLER", payload, "bridge");
   },
   "devtools"
 );

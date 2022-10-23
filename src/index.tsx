@@ -1,4 +1,3 @@
-/* @refresh reload */
 import { render } from "solid-js/web";
 
 import "./index.css";
@@ -7,7 +6,7 @@ import { ErrorBoundary } from "solid-js";
 
 render(
   () => (
-    <ErrorBoundary fallback={<div>Error</div>}>
+    <ErrorBoundary fallback={(e) => <div>{e}</div>}>
       <App />
     </ErrorBoundary>
   ),

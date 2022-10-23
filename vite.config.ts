@@ -4,9 +4,13 @@ import solidPlugin from "vite-plugin-solid";
 import { crx } from "@crxjs/vite-plugin";
 import manifest from "./manifest";
 
+const isDev = process.env.NODE_ENV === "development";
+
 export default defineConfig({
   plugins: [
-    solidPlugin(),
+    solidPlugin({
+      dev: false,
+    }),
     crx({
       manifest,
     }),
@@ -15,12 +19,13 @@ export default defineConfig({
     port: 3000,
   },
   build: {
-    target: "esnext",
+    emptyOutDir: false,
+    sourcemap: isDev ? "inline" : false,
     rollupOptions: {
       input: {
-        panel: "./index.html",
-        bridge: "bridge/bridge.ts.js",
+        panel: "index.html",
       },
     },
+    target: "esnext",
   },
 });

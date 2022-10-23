@@ -4,8 +4,8 @@
 //   stop: void;
 // }
 
-import { StartOptions } from "msw";
-import { SerializedMockConfig, SerializedRouteHandler } from "./types";
+import {StartOptions} from "msw";
+import {SerializedMockConfig, SerializedRouteHandler} from "./types";
 
 export type MswDevtoolsEventData = {
   BRIDGE_CHECK_MSW: {
@@ -27,4 +27,10 @@ export type MswDevtoolsEventData = {
   DEVTOOLS_MOUNT: void;
   DEVTOOLS_UPDATE_ROUTE: { id: number; skip: boolean };
   DEVTOOLS_UPDATE_MOCK_CONFIGURATION: { id: string; skip: boolean };
+
+  DEVTOOLS_CREATE_HANDLER: {
+    response: string;
+    url: string;
+    method: string;
+  }
 };

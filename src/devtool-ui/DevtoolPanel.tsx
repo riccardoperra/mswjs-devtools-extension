@@ -49,21 +49,21 @@ export function DevtoolPanel(props: VoidProps<DevtoolPanel>) {
         </div>
       </div>
 
-      <fieldset disabled={!props.controller.enabled}>
-        <div>
-          <div class="tabs tabs-boxed px-4">
-            <a class={getTabClasses(0)} onClick={() => setActiveTab(0)}>
-              Routes
-            </a>
-            <a class={getTabClasses(1)} onClick={() => setActiveTab(1)}>
-              Mocks config
-            </a>
-            <a class={getTabClasses(2)} onClick={() => setActiveTab(2)}>
-              Environment
-            </a>
-          </div>
+      <div>
+        <div class="tabs tabs-boxed px-4">
+          <a class={getTabClasses(0)} onClick={() => setActiveTab(0)}>
+            Routes
+          </a>
+          <a class={getTabClasses(1)} onClick={() => setActiveTab(1)}>
+            Mocks config
+          </a>
+          <a class={getTabClasses(2)} onClick={() => setActiveTab(2)}>
+            Environment
+          </a>
         </div>
+      </div>
 
+      <fieldset disabled={!props.controller.enabled} class={"relative"}>
         <Switch>
           <Match when={activeTab() === 0} keyed={false}>
             <RoutesHandler

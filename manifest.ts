@@ -18,7 +18,7 @@ export default defineManifest((env) => ({
   version: `${major}.${minor}.${patch}.${label}`,
   // semver is OK in "version_name"
   version_name: version,
-  author: "Riccardo Perra ",
+  author: "Riccardo Perra",
   minimum_chrome_version: "94",
   content_security_policy: {
     extension_pages: "script-src 'self'; object-src 'self'",
@@ -45,12 +45,7 @@ export default defineManifest((env) => ({
     type: "module",
     persistent: true,
   },
-  web_accessible_resources: [
-    {
-      resources: ["bridge/bridge.ts.js"],
-      matches: ["*://*/*"],
-    },
-  ],
+
   permissions: ["scripting", "activeTab"],
   // action: {
   //   default_icon: {
