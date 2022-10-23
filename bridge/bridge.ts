@@ -2,12 +2,13 @@ import { RequestHandler, SetupWorkerApi } from "msw";
 import { MswDevtoolsExtension } from "../shared/extension";
 import { logHandler } from "./logHandler";
 import { bridgeMessenger } from "./bridgeMessenger";
+import { logMock } from "./logMock";
 
 let handlerList: readonly RequestHandler[];
 
 const __MSWJS_DEVTOOLS_EXTENSION: MswDevtoolsExtension = {
   msw: undefined,
-  async configure(msw, rest) {
+  async configure(msw, mocks) {
     this.msw = msw;
 
     let initialized = false;
@@ -40,12 +41,12 @@ const __MSWJS_DEVTOOLS_EXTENSION: MswDevtoolsExtension = {
 
     bridgeMessenger.on(
       "DEVTOOLS_MOUNT",
-      () => init(msw, initialized),
+      () => init(msw, initialized, mocks),
       "content-script"
     );
 
     bridgeMessenger.on(
-      "DEVTOOLS_UPDATE_MOCK",
+      "DEVTOOLS_UPDATE_ROUTE",
       ({ payload: { id, skip } }) => {
         const handler = handlerList[id];
 
@@ -74,13 +75,40 @@ const __MSWJS_DEVTOOLS_EXTENSION: MswDevtoolsExtension = {
       "content-script"
     );
 
-    init(msw, initialized);
+    bridgeMessenger.on(
+      "DEVTOOLS_UPDATE_MOCK_CONFIGURATION",
+      ({ payload: { id, skip } }) => {
+        mocks[id] = !skip;
+        if (skip) {
+          logMock(id, {
+            color: "#e3db2a",
+            description: "Disabled",
+          });
+        } else {
+          logMock(id, {
+            color: "#34d537",
+            description: "Enabled",
+          });
+        }
+
+        bridgeMessenger.dispatch("BRIDGE_MSW_UPDATE_MOCK_CONFIGURATION", {
+          mocks: mocks,
+        });
+      },
+      "content-script"
+    );
+
+    init(msw, initialized, mocks);
   },
 };
 
 Object.assign(window, { __MSWJS_DEVTOOLS_EXTENSION });
 
-function init(msw: SetupWorkerApi, initialized: boolean) {
+function init(
+  msw: SetupWorkerApi,
+  initialized: boolean,
+  mocks: Record<string, boolean>
+) {
   handlerList = msw.listHandlers();
   const handlers = buildHandlers(handlerList);
   bridgeMessenger.dispatch(
@@ -88,6 +116,7 @@ function init(msw: SetupWorkerApi, initialized: boolean) {
     {
       handlers,
       initialized,
+      mocks,
     },
     "content-script"
   );

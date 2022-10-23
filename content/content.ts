@@ -25,9 +25,21 @@ contentMessenger.on(
 );
 
 contentMessenger.on(
-  "DEVTOOLS_UPDATE_MOCK",
+  "DEVTOOLS_UPDATE_ROUTE",
   (data) => {
-    contentMessenger.dispatch("DEVTOOLS_UPDATE_MOCK", data.payload, "bridge");
+    contentMessenger.dispatch("DEVTOOLS_UPDATE_ROUTE", data.payload, "bridge");
+  },
+  "devtools"
+);
+
+contentMessenger.on(
+  "DEVTOOLS_UPDATE_MOCK_CONFIGURATION",
+  (data) => {
+    contentMessenger.dispatch(
+      "DEVTOOLS_UPDATE_MOCK_CONFIGURATION",
+      data.payload,
+      "bridge"
+    );
   },
   "devtools"
 );
