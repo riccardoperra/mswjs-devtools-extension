@@ -5,17 +5,22 @@
 // }
 
 import { StartOptions } from "msw";
+import { SerializedMockConfig, SerializedRouteHandler } from "./types";
 
 export type MswDevtoolsEventData = {
+  BRIDGE_CHECK_MSW: {
+    detected: boolean;
+  };
+  BRIDGE_CHECK_MSW_RESPONSE: { ready: boolean };
   BRIDGE_MSW_START: { options: StartOptions | undefined };
   BRIDGE_MSW_STOP: void;
   BRIDGE_MSW_INIT: {
-    handlers: any[];
-    mocks: Record<string, boolean>;
+    handlers: SerializedRouteHandler[];
+    mocksConfig: SerializedMockConfig[];
     initialized: boolean;
   };
   BRIDGE_MSW_UPDATE_HANDLERS: { handlers: any[]; initialized: boolean };
-  BRIDGE_MSW_UPDATE_MOCK_CONFIGURATION: { mocks: Record<string, boolean> };
+  BRIDGE_MSW_UPDATE_MOCK_CONFIGURATION: { mocksConfig: SerializedMockConfig[] };
 
   DEVTOOLS_MSW_START: void;
   DEVTOOLS_MSW_STOP: void;

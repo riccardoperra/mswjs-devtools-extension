@@ -58,5 +58,3 @@ export const contentMessenger = createMessenger<MswDevtoolsEventData>(
   },
   "content-script"
 );
-
-console.log(contentMessenger);

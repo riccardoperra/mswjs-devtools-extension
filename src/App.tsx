@@ -1,106 +1,88 @@
 import {
   Component,
   createSignal,
-  For,
-  Match,
+  lazy,
   onCleanup,
   onMount,
-  Switch,
+  Show,
+  Suspense,
 } from "solid-js";
 import styles from "./App.module.css";
 import { version } from "../package.json";
 import { Footer } from "./Footer";
 import { devtoolsMessenger } from "./devtoolsMessenger";
+import { NotDetected } from "./components/NotDetected";
+import { LoadingPage } from "./components/LoadingPage";
+import { SerializedMockConfig, SerializedRouteHandler } from "../shared/types";
 
-interface Handler {
-  info: any;
-  id: number;
-  skip: boolean;
-}
-
-interface MockConfiguration {
-  id: string;
-  label: string;
-  skip: boolean;
-}
-
-const titleCase = (s: string) =>
-  s
-    .replace(/(^|[_-])([a-z])/g, (a, b, c) => c.toUpperCase())
-    .replace(/([a-z])([A-Z])/g, (a, b, c) => `${b} ${c}`);
+const DevtoolPanel = lazy(() =>
+  import("./devtool-ui/DevtoolPanel").then((m) => ({
+    default: m.DevtoolPanel,
+  }))
+);
 
 const App: Component = () => {
-  const subscriptions: (() => void)[] = [];
   const devToolsVersion = version;
+  const [loading, setLoading] = createSignal(true);
+  const [detected, setDetected] = createSignal(false);
   const [enabled, setEnabled] = createSignal(false);
-  const [handlers, setHandlers] = createSignal<Handler[]>([]);
+  const [handlers, setHandlers] = createSignal<SerializedRouteHandler[]>([]);
 
   const [mockConfigurations, setMockConfigurations] = createSignal<
-    MockConfiguration[]
+    SerializedMockConfig[]
   >([]);
 
-  const [activeTab, setActiveTab] = createSignal(1);
+  onMount(() => {
+    const subscriptions: (() => void)[] = [];
 
-  onMount(() =>
-    devtoolsMessenger.dispatch("DEVTOOLS_MOUNT", undefined, "content-script")
-  );
+    subscriptions.push(
+      devtoolsMessenger.on("BRIDGE_CHECK_MSW", ({ payload }) => {
+        const { detected } = payload;
+        setDetected(detected);
+        setLoading(false);
+      }),
 
-  onCleanup(() => subscriptions.forEach((unsubscribe) => unsubscribe()));
+      devtoolsMessenger.on(
+        "BRIDGE_MSW_INIT",
+        ({ payload }) => {
+          const { handlers, initialized, mocksConfig } = payload;
+          setHandlers(handlers);
+          setMockConfigurations(mocksConfig);
+          if (initialized) {
+            setEnabled(initialized);
+          }
+        },
+        "content-script"
+      ),
+      devtoolsMessenger.on(
+        "BRIDGE_MSW_START",
+        () => setEnabled(true),
+        "content-script"
+      ),
+      devtoolsMessenger.on(
+        "BRIDGE_MSW_STOP",
+        () => setEnabled(false),
+        "content-script"
+      ),
+      devtoolsMessenger.on(
+        "BRIDGE_MSW_UPDATE_HANDLERS",
+        ({ payload }) => {
+          const { handlers } = payload;
+          setHandlers(handlers);
+        },
+        "content-script"
+      ),
+      devtoolsMessenger.on(
+        "BRIDGE_MSW_UPDATE_MOCK_CONFIGURATION",
+        ({ payload }) => setMockConfigurations(payload.mocksConfig),
+        "content-script"
+      )
+    );
 
-  subscriptions.push(
-    devtoolsMessenger.on(
-      "BRIDGE_MSW_INIT",
-      ({ payload }) => {
-        const { handlers, initialized, mocks } = payload;
+    devtoolsMessenger.dispatch("DEVTOOLS_MOUNT", undefined, "content-script");
 
-        const mocksArray = Object.entries(mocks).map(([k, v]) => ({
-          id: k,
-          label: titleCase(k),
-          skip: !v,
-        }));
-
-        setHandlers(handlers);
-        setMockConfigurations(mocksArray);
-        if (initialized) {
-          setEnabled(initialized);
-        }
-      },
-      "content-script"
-    ),
-    devtoolsMessenger.on(
-      "BRIDGE_MSW_START",
-      () => setEnabled(true),
-      "content-script"
-    ),
-    devtoolsMessenger.on(
-      "BRIDGE_MSW_STOP",
-      () => setEnabled(false),
-      "content-script"
-    ),
-    devtoolsMessenger.on(
-      "BRIDGE_MSW_UPDATE_HANDLERS",
-      ({ payload }) => {
-        const { handlers } = payload;
-        setHandlers(handlers);
-      },
-      "content-script"
-    ),
-    devtoolsMessenger.on(
-      "BRIDGE_MSW_UPDATE_MOCK_CONFIGURATION",
-      ({ payload }) => {
-        const { mocks } = payload;
-
-        const mocksArray = Object.entries(mocks).map(([k, v]) => ({
-          id: k,
-          label: titleCase(k),
-          skip: !v,
-        }));
-
-        setMockConfigurations(mocksArray);
-      },
-      "content-script"
-    )
-  );
+    onCleanup(() => subscriptions.forEach((unsubscribe) => unsubscribe()));
+  });
 
   const stop = () =>
     devtoolsMessenger.dispatch(
@@ -117,140 +99,55 @@ const App: Component = () => {
     );
   };
 
-  const toggleSkipRoute = (id: number, skip: boolean) =>
+  const reload = () => {
+    setLoading(true);
+    devtoolsMessenger.dispatch("DEVTOOLS_MOUNT", undefined);
+  };
+
+  const setSkipRoute = (id: number, skip: boolean) =>
     devtoolsMessenger.dispatch("DEVTOOLS_UPDATE_ROUTE", { id, skip });
 
-  const toggleSkipMock = (id: string, skip: boolean) =>
+  const setSkipMock = (id: string, skip: boolean) =>
     devtoolsMessenger.dispatch("DEVTOOLS_UPDATE_MOCK_CONFIGURATION", {
       id,
       skip,
     });
 
-  const getTabClasses = (index: number) =>
-    activeTab() === index ? `tab tab-active` : `tab`;
-
   return (
     <div class={styles.App}>
-      <div
-        class={`bg-base-300 flex items-center h-[46px] px-4 ${styles.Header}`}
-      >
-        <div class="flex">
-          <div class="form-control">
-            <label class="label cursor-pointer">
-              <input
-                type="checkbox"
-                class="toggle"
-                checked={enabled()}
-                onChange={(evt) => {
-                  if (evt.currentTarget.checked) {
+      <Suspense fallback={<LoadingPage />}>
+        <Show fallback={<LoadingPage />} when={!loading()} keyed={false}>
+          <Show fallback={<NotDetected />} when={detected()} keyed={false}>
+            <DevtoolPanel
+              controller={{
+                enabled: enabled(),
+                mocks: mockConfigurations(),
+                get routes() {
+                  return handlers();
+                },
+                setSkipRoute(id: number, skip: boolean) {
+                  setSkipRoute(id, skip);
+                },
+                setSkipMock(id: string, skip: boolean) {
+                  setSkipMock(id, skip);
+                },
+                setEnabled(enabled: boolean) {
+                  if (enabled) {
                     start();
                   } else {
                     stop();
                   }
-                }}
-              />
-              <span class="ml-4 label-text font-bold">
-                Enable MockServiceWorker
-              </span>
-            </label>
-          </div>
-        </div>
-      </div>
+                },
+                forceReload() {
+                  reload();
+                },
+              }}
+            />
 
-      <fieldset disabled={!enabled()}>
-        <div class="px-3 my-3">
-          <div class="tabs tabs-boxed">
-            <a class={getTabClasses(0)} onClick={() => setActiveTab(0)}>
-              Routes
-            </a>
-            <a class={getTabClasses(1)} onClick={() => setActiveTab(1)}>
-              Mocks config
-            </a>
-            <a class={getTabClasses(2)} onClick={() => setActiveTab(2)}>
-              Environment
-            </a>
-          </div>
-        </div>
-
-        <Switch>
-          <Match when={activeTab() === 0} keyed={false}>
-            <div class="px-4 my-3 flex items-center justify-between">
-              <h1 class="text-lg font-bold">Available routes</h1>
-              <button class="btn btn-primary btn-sm">Add new</button>
-            </div>
-            <div class={styles.HandlersList}>
-              <For each={handlers()}>
-                {(handler) => {
-                  return (
-                    <div class={"py-2 flex items-center"}>
-                      <div class="form-control">
-                        <label class="label cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={!handler.skip}
-                            classList={{
-                              checkbox: true,
-                              "checkbox-primary": !handler.skip,
-                            }}
-                            onChange={(event) =>
-                              toggleSkipRoute(
-                                handler.id,
-                                !event.currentTarget.checked
-                              )
-                            }
-                          />
-                          <span class="label-text ml-4">
-                            [{handler.info.method}] {handler.info.path}
-                          </span>
-                        </label>
-                      </div>
-                    </div>
-                  );
-                }}
-              </For>
-            </div>
-          </Match>
-
-          <Match when={activeTab() === 1} keyed={false}>
-            <div class="px-4 my-3 flex items-center justify-between">
-              <h1 class="text-lg font-bold">Mocks config</h1>
-            </div>
-            <div class={styles.HandlersList}>
-              <For each={mockConfigurations()}>
-                {(mock) => {
-                  return (
-                    <div class={"py-2 flex items-center"}>
-                      <div class="form-control">
-                        <label class="label cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={!mock.skip}
-                            classList={{
-                              checkbox: true,
-                              "checkbox-primary": !mock.skip,
-                            }}
-                            onChange={(event) =>
-                              toggleSkipMock(
-                                mock.id,
-                                !event.currentTarget.checked
-                              )
-                            }
-                          />
-                          <span class="label-text ml-4 normal-case">
-                            {mock.label}
-                          </span>
-                        </label>
-                      </div>
-                    </div>
-                  );
-                }}
-              </For>
-            </div>
-          </Match>
-        </Switch>
-      </fieldset>
-
-      <Footer version={version} />
+            <Footer version={devToolsVersion} />
+          </Show>
+        </Show>
+      </Suspense>
     </div>
   );
 };

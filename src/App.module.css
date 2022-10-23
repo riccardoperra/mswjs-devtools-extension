@@ -1,14 +1,4 @@
 .App {
-  height: 100%;
-  overflow: hidden;
-}
-
-.Header {
-  border-bottom: 1px solid hsl(0deg 0% 100% / 10%);
-}
-
-.HandlersList {
-  overflow: auto;
-  height: 100svh;
-  padding: 0 theme(spacing.4);
+    height: 100%;
+    overflow: hidden;
 }

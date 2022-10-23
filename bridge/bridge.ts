@@ -3,6 +3,8 @@ import { MswDevtoolsExtension } from "../shared/extension";
 import { logHandler } from "./logHandler";
 import { bridgeMessenger } from "./bridgeMessenger";
 import { logMock } from "./logMock";
+import { MockConfig, SerializedRouteHandler } from "../shared/types";
+import { toTitleCase } from "../shared/toTitleCase";
 
 let handlerList: readonly RequestHandler[];
 
@@ -41,7 +43,19 @@ const __MSWJS_DEVTOOLS_EXTENSION: MswDevtoolsExtension = {
 
     bridgeMessenger.on(
       "DEVTOOLS_MOUNT",
-      () => init(msw, initialized, mocks),
+      () => {
+        setTimeout(
+          () => {
+            const detected = !!__MSWJS_DEVTOOLS_EXTENSION.msw;
+            bridgeMessenger.dispatch("BRIDGE_CHECK_MSW", { detected });
+            if (detected) {
+              init(msw, initialized, mocks);
+            }
+          },
+
+          1000
+        );
+      },
       "content-script"
     );
 
@@ -66,7 +80,7 @@ const __MSWJS_DEVTOOLS_EXTENSION: MswDevtoolsExtension = {
           });
         }
 
-        const updatedHandlers = buildHandlers(handlerList);
+        const updatedHandlers = buildSerializedRouteHandlers(handlerList);
         bridgeMessenger.dispatch("BRIDGE_MSW_UPDATE_HANDLERS", {
           handlers: updatedHandlers,
           initialized: initialized,
@@ -92,7 +106,7 @@ const __MSWJS_DEVTOOLS_EXTENSION: MswDevtoolsExtension = {
         }
 
         bridgeMessenger.dispatch("BRIDGE_MSW_UPDATE_MOCK_CONFIGURATION", {
-          mocks: mocks,
+          mocksConfig: buildSerializedMockConfigs(mocks),
         });
       },
       "content-script"
@@ -110,19 +124,20 @@ function init(
   mocks: Record<string, boolean>
 ) {
   handlerList = msw.listHandlers();
-  const handlers = buildHandlers(handlerList);
   bridgeMessenger.dispatch(
     "BRIDGE_MSW_INIT",
     {
-      handlers,
+      handlers: buildSerializedRouteHandlers(handlerList),
+      mocksConfig: buildSerializedMockConfigs(mocks),
       initialized,
-      mocks,
     },
     "content-script"
   );
 }
 
-function buildHandlers(handlers: readonly RequestHandler[]) {
+function buildSerializedRouteHandlers(
+  handlers: readonly RequestHandler[]
+): SerializedRouteHandler[] {
   return handlers.map((handler, index) => {
     return {
       id: index,
@@ -130,4 +145,12 @@ function buildHandlers(handlers: readonly RequestHandler[]) {
       info: handler.info,
     };
   });
+}
+
+function buildSerializedMockConfigs(config: MockConfig) {
+  return Object.entries(config).map(([id, enabled]) => ({
+    id: id,
+    label: toTitleCase(id),
+    skip: !enabled,
+  }));
 }

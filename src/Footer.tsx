@@ -8,7 +8,7 @@ export function Footer(props: ParentProps<FooterProps>) {
   return (
     <footer
       class={
-        "fixed bottom-0 right-0 pb-1 pr-2 w-full text-right bg-base-200 text-base-content"
+        "fixed bottom-0 right-0 pb-1 pr-2 w-full text-right text-base-content"
       }
     >
       <span>

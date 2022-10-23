@@ -1,0 +1,27 @@
+@keyframes pulse {
+    0% {
+        filter: drop-shadow(0 0 0 var(--outer-shadow));
+        box-shadow: 0 0 0 var(--inner-shadow);
+    }
+    100% {
+        filter: drop-shadow(0 0 90px rgba(0, 0, 0, 0));
+        box-shadow: 0 0 0 35px rgb(0, 0, 0, 0);
+    }
+}
+
+.Loading {
+    --inner-shadow: rgb(253, 105, 51);
+    --outer-shadow: rgb(209, 35, 35);
+    display: inline-flex;
+    align-items: center;
+    border-radius: 50%;
+    padding: theme(spacing.8);
+    justify-content: center;
+    animation: pulse 1s infinite;
+}
+
+.MswLogo {
+    background: url("/msw.svg");
+    width: 124px;
+    height: 124px;
+}
