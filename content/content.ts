@@ -1,62 +1,46 @@
-var tabId: string;
+import { contentMessenger } from "./contentMessenger";
 
-window.addEventListener("message", (event) => {
-  if (
-    event.source === window &&
-    event.data &&
-    event.data.source === "mswjs-script"
-  ) {
-    chrome.runtime.sendMessage(event.data);
-  }
-});
+contentMessenger.on(
+  "DEVTOOLS_MSW_START",
+  (event) => {
+    console.log("TESTING MSW", event);
+    contentMessenger.dispatch("DEVTOOLS_MSW_START", undefined, "bridge");
+  },
+  "devtools"
+);
 
-chrome.runtime.onMessage.addListener((event) => {
-  if (event.type && event.source === "mswjs-app") {
-    switch (event.type) {
-      case "MSW_START": {
-        postMessage(
-          {
-            type: "MSW_START",
-            source: "mswjs-content",
-          },
-          "*"
-        );
-        break;
-      }
-      case "MSW_STOP": {
-        postMessage(
-          {
-            type: "MSW_STOP",
-            source: "mswjs-content",
-          },
-          "*"
-        );
-        break;
-      }
-      case "MSW_INIT": {
-        postMessage(
-          {
-            type: "MSW_INIT",
-            source: "mswjs-content",
-          },
-          "*"
-        );
-        break;
-      }
-      case "MSW_MOCK_UPDATE": {
-        postMessage(
-          {
-            type: "MSW_MOCK_UPDATE",
-            source: "mswjs-content",
-            payload: event.payload,
-          },
-          "*"
-        );
-        break;
-      }
-    }
-  }
-});
+contentMessenger.on(
+  "DEVTOOLS_MSW_STOP",
+  (event) => {
+    console.log("TESTING MSW STOP", event);
+    contentMessenger.dispatch("DEVTOOLS_MSW_STOP", undefined, "bridge");
+  },
+  "devtools"
+);
+
+contentMessenger.on(
+  "DEVTOOLS_MOUNT",
+  (data) => {
+    contentMessenger.dispatch("DEVTOOLS_MOUNT", data.payload, "bridge");
+  },
+  "devtools"
+);
+
+contentMessenger.on(
+  "DEVTOOLS_UPDATE_MOCK",
+  (data) => {
+    contentMessenger.dispatch("DEVTOOLS_UPDATE_MOCK", data.payload, "bridge");
+  },
+  "devtools"
+);
+
+contentMessenger.on(
+  "*",
+  (event) => {
+    contentMessenger.dispatch(event.type, event.payload, "devtools");
+  },
+  "bridge"
+);
 
 const src = chrome.runtime.getURL(`bridge/bridge.ts.js`);
 const scriptElement = document.createElement("script");

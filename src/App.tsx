@@ -1,19 +1,8 @@
-import { Component, createSignal, For, onMount } from "solid-js";
+import { Component, createSignal, For, onCleanup, onMount } from "solid-js";
 import styles from "./App.module.css";
 import { version } from "../package.json";
 import { Footer } from "./Footer";
-
-function sendContent<T>(data: T) {
-  chrome.tabs.query(
-    {
-      active: true,
-      currentWindow: true,
-    },
-    (tabs) => {
-      chrome.tabs.sendMessage(tabs[0].id as number, data);
-    }
-  );
-}
+import { devtoolsMessenger } from "./devtoolsMessenger";
 
 interface Handler {
   info: any;
@@ -22,49 +11,68 @@ interface Handler {
 }
 
 const App: Component = () => {
+  const subscriptions: (() => void)[] = [];
   const devToolsVersion = version;
   const [enabled, setEnabled] = createSignal(false);
   const [handlers, setHandlers] = createSignal<Handler[]>([]);
 
-  onMount(() => sendContent({ type: "MSW_INIT", source: "mswjs-app" }));
+  onMount(() =>
+    devtoolsMessenger.dispatch("DEVTOOLS_MOUNT", undefined, "content-script")
+  );
 
-  chrome.runtime.onMessage.addListener((message) => {
-    if (message.source === "mswjs-script") {
-      switch (message.type) {
-        case "MSW_INIT": {
-          const { handlers, initialized } = message.payload;
-          setHandlers(handlers);
-          if (initialized) {
-            setEnabled(initialized);
-          }
-          break;
-        }
-        case "MSW_START": {
-          setEnabled(true);
-          break;
-        }
-        case "MSW_STOP": {
-          setEnabled(false);
-          break;
-        }
-        case "MSW_UPDATE_HANDLERS": {
-          const { handlers } = message.payload;
-          setHandlers(handlers);
-        }
-      }
-    }
-  });
+  onCleanup(() => subscriptions.forEach((unsubscribe) => unsubscribe()));
 
-  const stop = () => sendContent({ type: "MSW_STOP", source: "mswjs-app" });
+  subscriptions.push(
+    devtoolsMessenger.on(
+      "BRIDGE_MSW_INIT",
+      ({ payload }) => {
+        const { handlers, initialized } = payload;
+        setHandlers(handlers);
+        if (initialized) {
+          setEnabled(initialized);
+        }
+      },
+      "content-script"
+    ),
+    devtoolsMessenger.on(
+      "BRIDGE_MSW_START",
+      () => setEnabled(true),
+      "content-script"
+    ),
+    devtoolsMessenger.on(
+      "BRIDGE_MSW_STOP",
+      () => setEnabled(false),
+      "content-script"
+    ),
+    devtoolsMessenger.on(
+      "BRIDGE_MSW_UPDATE_HANDLERS",
+      ({ payload }) => {
+        const { handlers } = payload;
+        setHandlers(handlers);
+      },
+      "content-script"
+    )
+  );
 
-  const start = () => sendContent({ type: "MSW_START", source: "mswjs-app" });
+  const stop = () =>
+    devtoolsMessenger.dispatch(
+      "DEVTOOLS_MSW_STOP",
+      undefined,
+      "content-script"
+    );
+
+  const start = () => {
+    devtoolsMessenger.dispatch(
+      "DEVTOOLS_MSW_START",
+      undefined,
+      "content-script"
+    );
+  };
 
   const toggleSkipMock = (id: number, skip: boolean) =>
-    sendContent({
-      type: "MSW_MOCK_UPDATE",
-      source: "mswjs-app",
-      payload: { id, skip },
-    });
+    devtoolsMessenger.dispatch("DEVTOOLS_UPDATE_MOCK", { id, skip });
+
+  onCleanup(() => {});
 
   return (
     <div class={styles.App}>
@@ -95,6 +103,12 @@ const App: Component = () => {
       </div>
 
       <fieldset disabled={!enabled()}>
+        <div class="px-4 my-3 flex items-center justify-between">
+          <h1 class="text-lg font-bold">Available routes</h1>
+
+          {/*<button class="btn btn-primary btn-sm">Add new</button>*/}
+        </div>
+
         <div class={styles.HandlersList}>
           <For each={handlers()}>
             {(handler) => {
@@ -105,7 +119,10 @@ const App: Component = () => {
                       <input
                         type="checkbox"
                         checked={!handler.skip}
-                        class="checkbox"
+                        classList={{
+                          checkbox: true,
+                          "checkbox-primary": !handler.skip,
+                        }}
                         onChange={(event) =>
                           toggleSkipMock(
                             handler.id,

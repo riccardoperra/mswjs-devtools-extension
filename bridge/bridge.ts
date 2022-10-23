@@ -1,98 +1,86 @@
 import { RequestHandler, SetupWorkerApi } from "msw";
 import { MswDevtoolsExtension } from "../shared/extension";
 import { logHandler } from "./logHandler";
+import { bridgeMessenger } from "./bridgeMessenger";
 
 let handlerList: readonly RequestHandler[];
 
 const __MSWJS_DEVTOOLS_EXTENSION: MswDevtoolsExtension = {
   msw: undefined,
-  async configure(msw) {
+  async configure(msw, rest) {
     this.msw = msw;
+
     let initialized = false;
     const nativeMswStop = msw.stop;
     msw.stop = () => {
       initialized = false;
       nativeMswStop();
-      window.postMessage(
-        {
-          source: "mswjs-script",
-          type: "MSW_STOP",
-        },
-        "*"
-      );
+      bridgeMessenger.dispatch("BRIDGE_MSW_STOP", undefined, "content-script");
     };
 
     const nativeMswStart = msw.start;
     msw.start = (options, ...args) => {
       initialized = true;
       const startReturn = nativeMswStart(options, ...args);
-      window.postMessage(
-        {
-          source: "mswjs-script",
-          type: "MSW_START",
-        },
-        "*"
+      bridgeMessenger.dispatch(
+        "BRIDGE_MSW_START",
+        { options },
+        "content-script"
       );
       return startReturn;
     };
 
-    window.addEventListener("message", (event) => {
-      if (event.data && event.data.source === "mswjs-content") {
-        switch (event.data.type) {
-          case "MSW_START": {
-            return msw.start();
-          }
-          case "MSW_STOP": {
-            return msw.stop();
-          }
-          case "MSW_INIT": {
-            init(msw, initialized);
-            break;
-          }
-          case "MSW_MOCK_UPDATE": {
-            const { id, skip } = event.data.payload;
-            const handler = handlerList[id];
+    bridgeMessenger.on(
+      "DEVTOOLS_MSW_START",
+      () => msw.start(),
+      "content-script"
+    );
 
-            if (handler) {
-              handler.markAsSkipped(skip);
-            }
+    bridgeMessenger.on("DEVTOOLS_MSW_STOP", () => msw.stop(), "content-script");
 
-            const {
-              info: { callFrame, header },
-            } = handler;
+    bridgeMessenger.on(
+      "DEVTOOLS_MOUNT",
+      () => init(msw, initialized),
+      "content-script"
+    );
 
-            const pragma = handler.info.hasOwnProperty("operationType")
-              ? "[graphql]"
-              : "[rest]";
+    bridgeMessenger.on(
+      "DEVTOOLS_UPDATE_MOCK",
+      ({ payload: { id, skip } }) => {
+        const handler = handlerList[id];
 
-            if (skip) {
-              logHandler(handler, {
-                color: "#e3db2a",
-                description: "Disabled",
-              });
-            } else {
-              logHandler(handler, {
-                color: "#34d537",
-                description: "Enabled",
-              });
-            }
-
-            const updatedHandlers = buildHandlers(handlerList);
-            window.postMessage(
-              {
-                source: "mswjs-script",
-                type: "MSW_UPDATE_HANDLERS",
-                payload: {
-                  handlers: updatedHandlers,
-                  initialized: initialized,
-                },
-              },
-              "*"
-            );
-          }
+        if (handler) {
+          handler.markAsSkipped(skip);
         }
-      }
-    });
+
+        const {
+          info: { callFrame, header },
+        } = handler;
+
+        const pragma = handler.info.hasOwnProperty("operationType")
+          ? "[graphql]"
+          : "[rest]";
+
+        if (skip) {
+          logHandler(handler, {
+            color: "#e3db2a",
+            description: "Disabled",
+          });
+        } else {
+          logHandler(handler, {
+            color: "#34d537",
+            description: "Enabled",
+          });
+        }
+
+        const updatedHandlers = buildHandlers(handlerList);
+        bridgeMessenger.dispatch("BRIDGE_MSW_UPDATE_HANDLERS", {
+          handlers: updatedHandlers,
+          initialized: initialized,
+        });
+      },
+      "content-script"
+    );
 
     init(msw, initialized);
   },
@@ -103,14 +91,13 @@ Object.assign(window, { __MSWJS_DEVTOOLS_EXTENSION });
 function init(msw: SetupWorkerApi, initialized: boolean) {
   handlerList = msw.listHandlers();
   const handlers = buildHandlers(handlerList);
-
-  window.postMessage(
+  bridgeMessenger.dispatch(
+    "BRIDGE_MSW_INIT",
     {
-      source: "mswjs-script",
-      type: "MSW_INIT",
-      payload: { handlers, initialized },
+      handlers,
+      initialized,
     },
-    "*"
+    "content-script"
   );
 }
 
