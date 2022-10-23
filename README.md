@@ -9,16 +9,17 @@
 
 <br />
 
-
-![img_1.png](img_1.png)
+<p align="center">
+    <img src="showcase.gif" alt="Showcase of devtools"/>
+</p>
 
 ## 🚧 This project is currently in early development 🚧
 
 ## Usage
 
 ```ts
-import { setupWorker, SetupWorkerApi } from "msw";
-import { handlers } from "./handlers";
+import {setupWorker, SetupWorkerApi} from "msw";
+import {handlers} from "./handlers";
 
 export const worker = setupWorker(...handlers);
 
