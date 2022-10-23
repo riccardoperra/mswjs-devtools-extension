@@ -53,14 +53,6 @@ const __MSWJS_DEVTOOLS_EXTENSION: MswDevtoolsExtension = {
           handler.markAsSkipped(skip);
         }
 
-        const {
-          info: { callFrame, header },
-        } = handler;
-
-        const pragma = handler.info.hasOwnProperty("operationType")
-          ? "[graphql]"
-          : "[rest]";
-
         if (skip) {
           logHandler(handler, {
             color: "#e3db2a",

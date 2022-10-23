@@ -2,8 +2,7 @@ import { contentMessenger } from "./contentMessenger";
 
 contentMessenger.on(
   "DEVTOOLS_MSW_START",
-  (event) => {
-    console.log("TESTING MSW", event);
+  () => {
     contentMessenger.dispatch("DEVTOOLS_MSW_START", undefined, "bridge");
   },
   "devtools"
@@ -11,8 +10,7 @@ contentMessenger.on(
 
 contentMessenger.on(
   "DEVTOOLS_MSW_STOP",
-  (event) => {
-    console.log("TESTING MSW STOP", event);
+  () => {
     contentMessenger.dispatch("DEVTOOLS_MSW_STOP", undefined, "bridge");
   },
   "devtools"

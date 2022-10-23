@@ -17,7 +17,7 @@ export function logHandler(
 
   console.groupCollapsed(
     `%c${pragma} ${header} ${options.description}`,
-    "color:orange;font-weight:bold;"
+    `color:${options.color};font-weight:bold;`
   );
 
   if (handler.info.callFrame) {
