@@ -24,8 +24,23 @@
     "vite-plugin-solid": "^2.3.0"
   },
   "dependencies": {
+    "@codemirror/autocomplete": "^6.3.0",
+    "@codemirror/commands": "^6.1.2",
+    "@codemirror/lang-json": "^6.0.1",
+    "@codemirror/language": "^6.3.0",
+    "@codemirror/lint": "^6.0.0",
+    "@codemirror/state": "^6.1.2",
+    "@codemirror/view": "^6.4.0",
+    "@lezer/highlight": "^1.1.2",
     "@vanilla-extract/css": "^1.9.1",
     "daisyui": "^2.33.0",
+    "solid-codemirror": "^2.0.2",
     "solid-js": "^1.5.1"
+  },
+  "pnpm": {
+    "overrides": {
+      "@codemirror/state": "^6.1.2",
+      "@codemirror/view": "^6.4.0"
+    }
   }
 }

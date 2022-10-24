@@ -13,7 +13,7 @@ export function RoutesHandler(props: VoidProps<RoutesProps>) {
   const [showCreateForm, setShowCreateForm] = createSignal(false);
 
   return (
-    <div>
+    <div class={"flex flex-col h-full"}>
       <div class="px-4 my-3 flex items-center justify-between">
         <h1 class="text-lg font-bold">Available routes</h1>
         <button

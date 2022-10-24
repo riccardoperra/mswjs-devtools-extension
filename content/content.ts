@@ -71,6 +71,6 @@ script.addEventListener("error", (err) => {
   console.error(err);
 });
 
-document.body.append(script);
+document.head.append(script);
 
 export {};

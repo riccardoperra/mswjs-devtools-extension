@@ -4,6 +4,7 @@ import { DevToolPanelController } from "./controller";
 import { MockConfigHandler } from "./pages/MockConfigHandler/MockConfigHandler";
 import { RoutesHandler } from "./pages/RoutesHandler/RoutesHandler";
 import * as styles from "./DevtoolPanel.css";
+import { tabs } from "./DevtoolPanel.css";
 
 interface DevtoolPanel {
   controller: DevToolPanelController;
@@ -47,7 +48,7 @@ export function DevtoolPanel(props: VoidProps<DevtoolPanel>) {
         </div>
       </div>
 
-      <div class="tabs tabs-boxed px-4">
+      <div class={`tabs tabs-boxed px-4 ${styles.tabs}`}>
         <a class={getTabClasses(0)} onClick={() => setActiveTab(0)}>
           Routes
         </a>

@@ -1,6 +1,8 @@
 import { createStore } from "solid-js/store";
-import { createEffect, For } from "solid-js";
+import { createEffect, ErrorBoundary, For, lazy, Suspense } from "solid-js";
 import { devtoolsMessenger } from "../../../devtoolsMessenger";
+import { CheckIcon } from "../../../components/CheckIcon";
+import { SparklesIcon } from "../../../components/SparklesIcon";
 
 const METHODS = [
   "GET",
@@ -17,6 +19,12 @@ interface CreateRouteHandlerFormProps {
   onClose: () => void;
 }
 
+const JsonEditor = lazy(() =>
+  import("../../components/JsonEditor/JsonEditor").then((m) => ({
+    default: m.JsonEditor,
+  }))
+);
+
 export function CreateRouteHandlerForm(props: CreateRouteHandlerFormProps) {
   const [form, setForm] = createStore({
     method: METHODS[0] as string,
@@ -28,7 +36,9 @@ export function CreateRouteHandlerForm(props: CreateRouteHandlerFormProps) {
 
   return (
     <div
-      class={"w-[50%] h-[100%] absolute bg-base-300 w-full bottom-0 right-0"}
+      class={
+        "w-[100%] h-[100%] absolute bg-base-300 w-full bottom-0 right-0 flex flex-col"
+      }
     >
       <div class="px-4 py-2 flex items-center justify-between shadow-lg border-t border-base-300">
         <h1 class="text-lg font-bold">Create route</h1>
@@ -79,38 +89,45 @@ export function CreateRouteHandlerForm(props: CreateRouteHandlerFormProps) {
               />
             </div>
           </div>
-        </div>
 
-        <div class="form-control">
-          <label class="label">
-            <span class="label-text">Code</span>
-          </label>
-          <textarea
-            class="textarea textarea-bordered h-24"
-            placeholder="Bio"
-            onInput={(event) => setForm("response", event.currentTarget.value)}
-          ></textarea>
+          <div class={"ml-auto flex gap-2"}>
+            <button
+              class={"btn btn-primary gap-2"}
+              onClick={() => {
+                try {
+                  const response = JSON.parse(form.response);
+                  devtoolsMessenger.dispatch("DEVTOOLS_CREATE_HANDLER", {
+                    response,
+                    url: form.url,
+                    method: form.method,
+                  });
+                } catch (e) {
+                  console.error(e);
+                }
+              }}
+            >
+              <CheckIcon />
+              Submit
+            </button>
+          </div>
         </div>
-
-        <div class={"mt-4"}>
-          <button
-            class={"btn btn-primary"}
-            onClick={() => {
-              try {
-                const response = JSON.parse(form.response);
-                devtoolsMessenger.dispatch("DEVTOOLS_CREATE_HANDLER", {
-                  response,
-                  url: form.url,
-                  method: form.method,
-                });
-              } catch (e) {
-                console.error(e);
-              }
-            }}
-          >
-            Submit
-          </button>
-        </div>
+      </div>
+      <div class={"mt-2 px-4 border-y border-opacity-20 border-base-content"}>
+        <label class="label">
+          <span class="label-text">Response body</span>
+        </label>
+      </div>
+      <div class={"d-flex h-full relative"}>
+        <ErrorBoundary fallback={(e) => <div>{e}</div>}>
+          <Suspense>
+            <div class={"absolute w-full h-full"}>
+              <JsonEditor
+                value={form.response}
+                onValueChange={(value) => setForm("response", value)}
+              />
+            </div>
+          </Suspense>
+        </ErrorBoundary>
       </div>
     </div>
   );
