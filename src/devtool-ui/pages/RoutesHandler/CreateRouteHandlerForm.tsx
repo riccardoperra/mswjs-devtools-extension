@@ -10,6 +10,9 @@ import {
 import { devtoolsMessenger } from "../../../devtoolsMessenger";
 import { CheckIcon } from "../../../components/CheckIcon";
 import { ExclamationTriangleIcon } from "../../../components/ExclamationTriangleIcon";
+import { SparklesIcon } from "../../../components/SparklesIcon";
+import { format } from "prettier";
+import parserBabel from "prettier/parser-babel";
 
 const METHODS = [
   "GET",
@@ -53,6 +56,16 @@ export function CreateRouteHandlerForm(props: CreateRouteHandlerFormProps) {
 
   const isValid = () =>
     form.method && form.url && form.response && responseIsValid();
+
+  const formatJson = () => {
+    const formattedResponse = format(form.response, {
+      tabWidth: 2,
+      printWidth: 100,
+      parser: "json",
+      plugins: [parserBabel],
+    });
+    setForm("response", formattedResponse);
+  };
 
   return (
     <div
@@ -113,6 +126,13 @@ export function CreateRouteHandlerForm(props: CreateRouteHandlerFormProps) {
           <div class={"ml-auto flex gap-2"}>
             <button
               class={"btn btn-primary gap-2"}
+              onClick={() => formatJson()}
+            >
+              <SparklesIcon />
+              Format
+            </button>
+            <button
+              class={"btn btn-primary gap-2"}
               disabled={!isValid()}
               onClick={() => {
                 try {
@@ -164,6 +184,7 @@ export function CreateRouteHandlerForm(props: CreateRouteHandlerFormProps) {
             <div class={"absolute w-full h-full"}>
               <JsonEditor
                 value={form.response}
+                onSave={formatJson}
                 onValueChange={(value) => setForm("response", value)}
               />
             </div>

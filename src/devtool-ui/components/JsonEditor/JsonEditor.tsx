@@ -1,20 +1,19 @@
-import { createCodeMirror } from "solid-codemirror";
 import {
-  gutters,
+  createCodeMirror,
+  createEditorControlledValue,
+  createEditorFocus,
+} from "solid-codemirror";
+import {
   highlightActiveLine,
   highlightActiveLineGutter,
+  KeyBinding,
   keymap,
   lineNumbers,
 } from "@codemirror/view";
-import { createEffect, onMount, VoidProps } from "solid-js";
+import { onMount, VoidProps } from "solid-js";
 import { theme } from "./theme";
 import { json, jsonParseLinter } from "@codemirror/lang-json";
-import {
-  defaultKeymap,
-  historyKeymap,
-  indentWithTab,
-  history,
-} from "@codemirror/commands";
+import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
 import { bracketMatching, indentOnInput } from "@codemirror/language";
 import {
   closeBracketsKeymap,
@@ -25,15 +24,30 @@ import { linter } from "@codemirror/lint";
 interface JsonEditorProps {
   value: string;
   onValueChange: (value: string) => void;
+  onSave: () => void;
 }
 
 export function JsonEditor(props: VoidProps<JsonEditorProps>) {
   const { ref, createExtension, editorView } = createCodeMirror({
     onValueChange: props.onValueChange,
-    get value() {
-      return props.value;
-    },
+    value: props.value,
   });
+
+  createEditorControlledValue(editorView, () => props.value);
+  createEditorFocus(editorView, (focused) => {
+    if (!focused) {
+      props.onSave();
+    }
+  });
+
+  const saveKeymap: KeyBinding = {
+    key: "Ctrl-s",
+    preventDefault: true,
+    run: (editor) => {
+      props.onSave();
+      return editor.hasFocus;
+    },
+  };
 
   createExtension([
     lineNumbers(),
@@ -48,7 +62,7 @@ export function JsonEditor(props: VoidProps<JsonEditorProps>) {
       ...defaultKeymap,
       ...completionKeymap,
       ...historyKeymap,
-      indentWithTab,
+      saveKeymap,
     ]),
     json(),
   ]);
