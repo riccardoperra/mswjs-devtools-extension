@@ -1,8 +1,8 @@
 import { createSignal, For, Show, VoidProps } from "solid-js";
 import { Checkbox } from "../../../components/Checkbox";
-import styles from "../../DevtoolPanel.module.css";
 import { SerializedRouteHandler } from "../../../../shared/types";
 import { CreateRouteHandlerForm } from "./CreateRouteHandlerForm";
+import { ScrollableWrapper } from "../../components/ScrollableWrapper/ScrollableWrapper";
 
 interface RoutesProps {
   routes: SerializedRouteHandler[];
@@ -23,7 +23,7 @@ export function RoutesHandler(props: VoidProps<RoutesProps>) {
           Add new
         </button>
       </div>
-      <div class={styles.HandlersList}>
+      <ScrollableWrapper>
         <For each={props.routes}>
           {(route) => {
             return (
@@ -45,7 +45,7 @@ export function RoutesHandler(props: VoidProps<RoutesProps>) {
             );
           }}
         </For>
-      </div>
+      </ScrollableWrapper>
       <Show when={showCreateForm()}>
         <CreateRouteHandlerForm onClose={() => setShowCreateForm(false)} />
       </Show>

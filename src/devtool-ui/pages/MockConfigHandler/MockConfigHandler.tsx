@@ -1,7 +1,7 @@
 import { For, VoidProps } from "solid-js";
 import { Checkbox } from "../../../components/Checkbox";
-import styles from "../../DevtoolPanel.module.css";
 import { SerializedMockConfig } from "../../../../shared/types";
+import { ScrollableWrapper } from "../../components/ScrollableWrapper/ScrollableWrapper";
 
 interface MockConfigHandlerProps {
   mocks: SerializedMockConfig[];
@@ -14,7 +14,7 @@ export function MockConfigHandler(props: VoidProps<MockConfigHandlerProps>) {
       <div class="px-4 my-3 flex items-center justify-between">
         <h1 class="text-lg font-bold">Mocks config</h1>
       </div>
-      <div class={styles.HandlersList}>
+      <ScrollableWrapper>
         <For each={props.mocks}>
           {(mock) => {
             return (
@@ -36,7 +36,7 @@ export function MockConfigHandler(props: VoidProps<MockConfigHandlerProps>) {
             );
           }}
         </For>
-      </div>
+      </ScrollableWrapper>
     </>
   );
 }

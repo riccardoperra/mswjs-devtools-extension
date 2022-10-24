@@ -1,9 +1,9 @@
 import { ReloadIcon } from "../components/ReloadIcon";
 import { createSignal, Match, Switch, VoidProps } from "solid-js";
-import styles from "./DevtoolPanel.module.css";
 import { DevToolPanelController } from "./controller";
 import { MockConfigHandler } from "./pages/MockConfigHandler/MockConfigHandler";
 import { RoutesHandler } from "./pages/RoutesHandler/RoutesHandler";
+import * as styles from "./DevtoolPanel.css";
 
 interface DevtoolPanel {
   controller: DevToolPanelController;
@@ -17,10 +17,8 @@ export function DevtoolPanel(props: VoidProps<DevtoolPanel>) {
   };
 
   return (
-    <div>
-      <div
-        class={`bg-base-300 flex items-center h-[46px] px-4 ${styles.Header}`}
-      >
+    <div class={styles.wrapper}>
+      <div class={`bg-base-300 px-4 ${styles.header}`}>
         <div class="flex items-center w-full">
           <div class="form-control">
             <label class="label cursor-pointer">
@@ -49,37 +47,37 @@ export function DevtoolPanel(props: VoidProps<DevtoolPanel>) {
         </div>
       </div>
 
-      <div>
-        <div class="tabs tabs-boxed px-4">
-          <a class={getTabClasses(0)} onClick={() => setActiveTab(0)}>
-            Routes
-          </a>
-          <a class={getTabClasses(1)} onClick={() => setActiveTab(1)}>
-            Mocks config
-          </a>
-          <a class={getTabClasses(2)} onClick={() => setActiveTab(2)}>
-            Environment
-          </a>
-        </div>
+      <div class="tabs tabs-boxed px-4">
+        <a class={getTabClasses(0)} onClick={() => setActiveTab(0)}>
+          Routes
+        </a>
+        <a class={getTabClasses(1)} onClick={() => setActiveTab(1)}>
+          Mocks config
+        </a>
+        <a class={getTabClasses(2)} onClick={() => setActiveTab(2)}>
+          Environment
+        </a>
       </div>
 
-      <fieldset disabled={!props.controller.enabled} class={"relative"}>
-        <Switch>
-          <Match when={activeTab() === 0} keyed={false}>
-            <RoutesHandler
-              routes={props.controller.routes}
-              setSkipRoute={props.controller.setSkipRoute}
-            />
-          </Match>
+      <div class={styles.content}>
+        <fieldset disabled={!props.controller.enabled}>
+          <Switch>
+            <Match when={activeTab() === 0} keyed={false}>
+              <RoutesHandler
+                routes={props.controller.routes}
+                setSkipRoute={props.controller.setSkipRoute}
+              />
+            </Match>
 
-          <Match when={activeTab() === 1} keyed={false}>
-            <MockConfigHandler
-              mocks={props.controller.mocks}
-              setSkipMock={props.controller.setSkipMock}
-            />
-          </Match>
-        </Switch>
-      </fieldset>
+            <Match when={activeTab() === 1} keyed={false}>
+              <MockConfigHandler
+                mocks={props.controller.mocks}
+                setSkipMock={props.controller.setSkipMock}
+              />
+            </Match>
+          </Switch>
+        </fieldset>
+      </div>
     </div>
   );
 }

@@ -7,13 +7,13 @@ import {
   Show,
   Suspense,
 } from "solid-js";
-import styles from "./App.module.css";
 import { version } from "../package.json";
 import { devtoolsMessenger } from "./devtoolsMessenger";
 import { NotDetected } from "./components/NotDetected";
-import { LoadingPage } from "./components/LoadingPage";
+import { LoadingPage } from "./components/LoadingPage/LoadingPage";
 import { SerializedMockConfig, SerializedRouteHandler } from "../shared/types";
 import { Footer } from "./Footer";
+import * as styles from "./App.css";
 
 const DevtoolPanel = lazy(() =>
   import("./devtool-ui/DevtoolPanel").then((m) => ({
@@ -114,7 +114,7 @@ const App: Component = () => {
     });
 
   return (
-    <div class={styles.App}>
+    <div class={styles.container}>
       <Suspense fallback={<LoadingPage />}>
         <Show fallback={<LoadingPage />} when={!loading()} keyed={false}>
           <Show fallback={<NotDetected />} when={detected()} keyed={false}>
