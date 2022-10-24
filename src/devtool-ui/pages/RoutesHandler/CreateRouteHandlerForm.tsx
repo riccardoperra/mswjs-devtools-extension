@@ -1,8 +1,15 @@
 import { createStore } from "solid-js/store";
-import { createEffect, ErrorBoundary, For, lazy, Suspense } from "solid-js";
+import {
+  createEffect,
+  ErrorBoundary,
+  For,
+  lazy,
+  Show,
+  Suspense,
+} from "solid-js";
 import { devtoolsMessenger } from "../../../devtoolsMessenger";
 import { CheckIcon } from "../../../components/CheckIcon";
-import { SparklesIcon } from "../../../components/SparklesIcon";
+import { ExclamationTriangleIcon } from "../../../components/ExclamationTriangleIcon";
 
 const METHODS = [
   "GET",
@@ -33,6 +40,19 @@ export function CreateRouteHandlerForm(props: CreateRouteHandlerFormProps) {
   });
 
   createEffect(() => console.log(JSON.stringify(form)));
+
+  const responseIsValid = () => {
+    const response = form.response;
+    try {
+      JSON.parse(response);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  };
+
+  const isValid = () =>
+    form.method && form.url && form.response && responseIsValid();
 
   return (
     <div
@@ -93,6 +113,7 @@ export function CreateRouteHandlerForm(props: CreateRouteHandlerFormProps) {
           <div class={"ml-auto flex gap-2"}>
             <button
               class={"btn btn-primary gap-2"}
+              disabled={!isValid()}
               onClick={() => {
                 try {
                   const response = JSON.parse(form.response);
@@ -101,6 +122,7 @@ export function CreateRouteHandlerForm(props: CreateRouteHandlerFormProps) {
                     url: form.url,
                     method: form.method,
                   });
+                  props.onClose();
                 } catch (e) {
                   console.error(e);
                 }
@@ -112,10 +134,29 @@ export function CreateRouteHandlerForm(props: CreateRouteHandlerFormProps) {
           </div>
         </div>
       </div>
-      <div class={"mt-2 px-4 border-y border-opacity-20 border-base-content"}>
+      <div
+        class={
+          "mt-2 px-4 border-y border-opacity-20 border-base-content flex items-center"
+        }
+      >
         <label class="label">
           <span class="label-text">Response body</span>
         </label>
+        <div class={"ml-auto"}>
+          <Show
+            fallback={
+              <span class={"text-yellow-500"}>
+                <ExclamationTriangleIcon />
+              </span>
+            }
+            when={responseIsValid()}
+            keyed={false}
+          >
+            <span class={"text-green-500"}>
+              <CheckIcon />
+            </span>
+          </Show>
+        </div>
       </div>
       <div class={"d-flex h-full relative"}>
         <ErrorBoundary fallback={(e) => <div>{e}</div>}>
