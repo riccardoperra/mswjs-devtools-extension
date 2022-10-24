@@ -110,6 +110,18 @@ export const colors = EditorView.theme(
     ".cm-gutterElement.cm-activeLineGutter": {
       backgroundColor: parseColor(tokens.colors["editor.currentLine.fill"]),
     },
+    ".cm-tooltip": {
+      backgroundColor: parseColor(tokens.colors["tooltip.fill"]),
+      border: `1px solid ${parseColor(tokens.colors["tooltip.border"])}`,
+      color: parseColor(tokens.colors["tooltip.text"]),
+      borderRadius: "6px",
+      overflow: "hidden",
+      boxShadow: "0px 4px 16px 1px rgba(0,0,0,.25)",
+    },
+    ".cm-tooltip .cm-tooltip-lint.cm-tooltip-section .cm-diagnostic.cm-diagnostic-error":
+      {
+        border: "none",
+      },
   },
   {
     dark: true,

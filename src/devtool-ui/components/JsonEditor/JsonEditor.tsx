@@ -8,7 +8,7 @@ import {
 } from "@codemirror/view";
 import { createEffect, onMount, VoidProps } from "solid-js";
 import { theme } from "./theme";
-import { json } from "@codemirror/lang-json";
+import { json, jsonParseLinter } from "@codemirror/lang-json";
 import {
   defaultKeymap,
   historyKeymap,
@@ -20,6 +20,7 @@ import {
   closeBracketsKeymap,
   completionKeymap,
 } from "@codemirror/autocomplete";
+import { linter } from "@codemirror/lint";
 
 interface JsonEditorProps {
   value: string;
@@ -41,6 +42,7 @@ export function JsonEditor(props: VoidProps<JsonEditorProps>) {
     indentOnInput(),
     history(),
     bracketMatching(),
+    linter(jsonParseLinter()),
     keymap.of([
       ...closeBracketsKeymap,
       ...defaultKeymap,
