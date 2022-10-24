@@ -26,13 +26,9 @@ export default defineManifest((env) => ({
   devtools_page: "devtools/devtools.html",
   content_scripts: [
     {
-      matches: ["*://*/*"],
-      js: ["content/content.ts"],
       run_at: "document_start",
-    },
-    {
-      matches: ["*://*/*"],
-      js: ["bridge/bridge.ts"],
+      js: ["content/content.ts"],
+      matches: ["<all_urls>"],
     },
   ],
   externally_connectable: {

@@ -177,3 +177,5 @@ function buildSerializedMockConfigs(config: MockConfig) {
     skip: !enabled,
   }));
 }
+
+export {};

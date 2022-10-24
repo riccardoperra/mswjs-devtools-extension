@@ -1,5 +1,6 @@
 import { contentMessenger } from "./contentMessenger";
-import bridge from "../bridge/bridge?url";
+import bridge from "../bridge/bridge?script&module";
+
 contentMessenger.on(
   "DEVTOOLS_MSW_START",
   () => {
@@ -60,10 +61,16 @@ contentMessenger.on(
   "bridge"
 );
 
-const src = chrome.runtime.getURL(`bridge/bridge.ts.js`);
-const scriptElement = document.createElement("script");
-scriptElement.src = src;
-scriptElement.type = "module";
-document.body.append(scriptElement);
+const script = document.createElement("script");
+script.src = chrome.runtime.getURL(bridge);
+script.type = "module";
+script.addEventListener("load", () => {
+  console.log("script loaded");
+});
+script.addEventListener("error", (err) => {
+  console.error(err);
+});
+
+document.body.append(script);
 
 export {};
