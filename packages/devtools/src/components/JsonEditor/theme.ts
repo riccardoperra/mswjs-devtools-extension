@@ -8,7 +8,7 @@ export const parseColor = (hex: string) => {
   return `#${color}`;
 };
 
-export const highlightStyle = HighlightStyle.define([
+export const highlightStyle: HighlightStyle = HighlightStyle.define([
   {
     tag: [t.comment],
     color: parseColor(tokens.palette["Grey-90"]),

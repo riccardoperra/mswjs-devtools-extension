@@ -26,13 +26,4 @@ export default defineConfig({
     },
     target: "esnext",
   },
-  optimizeDeps: {
-    // Add both @codemirror/state and @codemirror/view to included deps to optimize
-    include: [
-      "@codemirror/language",
-      "@codemirror/state",
-      "@codemirror/lang-json",
-      "@codemirror/view",
-    ],
-  },
 });

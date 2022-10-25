@@ -1,5 +1,8 @@
-import { SerializedMockConfig, SerializedRouteHandler } from "../shared/types";
-import { MswDevtoolsEventData } from "../shared/messages";
+import {
+  MswDevtoolsEventData,
+  SerializedMockConfig,
+  SerializedRouteHandler,
+} from "@mswjs-devtools/shared";
 
 export interface DevToolPanelController {
   enabled: boolean;

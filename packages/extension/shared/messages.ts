@@ -1,11 +1,5 @@
-// export interface MswPublicEvents {
-//   init: void;
-//   start: void;
-//   stop: void;
-// }
-
-import {StartOptions} from "msw";
-import {SerializedMockConfig, SerializedRouteHandler} from "./types";
+import { StartOptions } from "msw";
+import { SerializedMockConfig, SerializedRouteHandler } from "./types";
 
 export type MswDevtoolsEventData = {
   BRIDGE_CHECK_MSW: {
@@ -32,5 +26,5 @@ export type MswDevtoolsEventData = {
     response: string;
     url: string;
     method: string;
-  }
+  };
 };

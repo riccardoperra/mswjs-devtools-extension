@@ -1,4 +1,5 @@
 import { contentMessenger } from "./contentMessenger";
+// @ts-ignore
 import bridge from "../bridge/bridge?script&module";
 
 contentMessenger.on(

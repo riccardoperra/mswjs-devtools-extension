@@ -1,33 +1,19 @@
 {
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "strict": true,
+    "composite": false,
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
-    "types": [
-      "vite/client",
-      "@types/chrome",
-    ],
+    "types": ["node"],
     "noEmit": true,
-    "isolatedModules": true,
     "resolveJsonModule": true,
-    "typeRoots": [
-      "./global.d.ts"
-    ]
   },
-  "include": [
-    "src/**/*",
-    "background/**",
-    "bridge/**",
-    "content/**",
-    "devtools/**",
-    "shared/**",
-    "sandbox/**",
-    "frontend/**",
-    "global.d.ts"
-  ]
+  "exclude": ["node_modules", "**/dist/**/*"]
 }

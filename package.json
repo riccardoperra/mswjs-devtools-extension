@@ -4,45 +4,26 @@
   "description": "",
   "scripts": {
     "start": "vite",
-    "dev": "vite",
+    "dev:shared": "pnpm -dir packages/shared run dev",
+    "dev:extension": "pnpm -dir packages/extension run dev",
+    "dev:devtools": "pnpm -dir packages/devtools run dev",
+    "dev:sandbox": "pnpm -dir sandbox run dev",
     "dev:playground": "vite serve sandbox",
-    "build": "vite build",
+    "dev": "concurrently pnpm:dev:shared pnpm:dev:devtools pnpm:dev:sandbox",
+    "build": "turbo run build --filter=!./sandbox/*",
     "serve": "vite preview"
   },
+  "type": "module",
   "license": "MIT",
   "devDependencies": {
     "@changesets/cli": "^2.25.0",
-    "@crxjs/vite-plugin": "^1.0.14",
-    "@tailwindcss/typography": "^0.5.7",
-    "@types/chrome": "^0.0.199",
-    "@types/prettier": "^2.7.1",
-    "@vanilla-extract/vite-plugin": "^3.6.1",
-    "autoprefixer": "^10.4.12",
-    "msw": "^0.47.4",
+    "@types/node": "^18.11.3",
+    "concurrently": "^7.5.0",
     "prettier": "^2.7.1",
-    "tailwindcss": "^3.2.1",
-    "typescript": "^4.8.2",
-    "vite": "^3.0.9",
-    "vite-plugin-solid": "^2.3.0"
+    "turbo": "^1.6.1",
+    "typescript": "^4.8.2"
   },
-  "dependencies": {
-    "@codemirror/autocomplete": "^6.3.0",
-    "@codemirror/commands": "^6.1.2",
-    "@codemirror/lang-json": "^6.0.1",
-    "@codemirror/language": "^6.3.0",
-    "@codemirror/lint": "^6.0.0",
-    "@codemirror/state": "^6.1.2",
-    "@codemirror/view": "^6.4.0",
-    "@lezer/highlight": "^1.1.2",
-    "@vanilla-extract/css": "^1.9.1",
-    "daisyui": "^2.33.0",
-    "solid-codemirror": "^2.1.2",
-    "solid-js": "^1.6.0"
-  },
-  "pnpm": {
-    "overrides": {
-      "@codemirror/state": "^6.1.2",
-      "@codemirror/view": "^6.4.0"
-    }
-  }
+  "workspaces": [
+    "packages/**"
+  ]
 }

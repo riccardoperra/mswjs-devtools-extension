@@ -1,19 +1,17 @@
 import { defineConfig } from "vite";
 import solidPlugin from "vite-plugin-solid";
+import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin";
+import dts from "vite-plugin-dts";
 
 export default defineConfig({
-  css: {
-    postcss: {
-      plugins: [
-        require("tailwindcss/nesting"),
-        require("tailwindcss")({
-          config: "./tailwind.config.js",
-        }),
-        require("autoprefixer"),
-      ],
+  build: {
+    lib: {
+      name: "@mswjs-devtools/devtools",
+      entry: "./src/index.tsx",
+      formats: ["cjs", "es"],
     },
   },
-  plugins: [solidPlugin()],
+  plugins: [solidPlugin(), vanillaExtractPlugin(), dts()],
   optimizeDeps: {
     // Add both @codemirror/state and @codemirror/view to included deps to optimize
     include: ["@codemirror/state", "@codemirror/view"],

@@ -1,6 +1,6 @@
 import { createSignal, For, Show, VoidProps } from "solid-js";
 import { Checkbox } from "../../components/Checkbox";
-import { SerializedRouteHandler } from "../../../shared/types";
+import { SerializedRouteHandler } from "@mswjs-devtools/shared";
 import { CreateRouteHandlerForm } from "./CreateRouteHandlerForm";
 import { ScrollableWrapper } from "../../components/ScrollableWrapper/ScrollableWrapper";
 

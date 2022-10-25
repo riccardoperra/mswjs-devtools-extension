@@ -10,7 +10,7 @@ import {
   keymap,
   lineNumbers,
 } from "@codemirror/view";
-import { onMount, VoidProps } from "solid-js";
+import { VoidProps } from "solid-js";
 import { theme } from "./theme";
 import { json, jsonParseLinter } from "@codemirror/lang-json";
 import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";

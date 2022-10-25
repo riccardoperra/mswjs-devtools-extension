@@ -7,7 +7,7 @@ import {
   Show,
   Suspense,
 } from "solid-js";
-import { version } from "../package.json";
+import { version } from "../../../package.json";
 import { devtoolsMessenger } from "./devtoolsMessenger";
 import { NotDetected } from "./components/NotDetected";
 import { LoadingPage } from "./components/LoadingPage/LoadingPage";
@@ -15,9 +15,8 @@ import { SerializedMockConfig, SerializedRouteHandler } from "../shared/types";
 import { Footer } from "./Footer";
 import * as styles from "./App.css";
 import { MswDevtoolsEventData } from "../shared/messages";
-
 const DevtoolPanel = lazy(() =>
-  import("../frontend/DevtoolPanel").then((m) => ({
+  import("@mswjs-devtools/devtools").then((m) => ({
     default: m.DevtoolPanel,
   }))
 );

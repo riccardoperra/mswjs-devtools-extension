@@ -1,5 +1,4 @@
-import { DevtoolPanel } from "../../frontend/DevtoolPanel";
-import { MswDevtoolsEventData } from "../../shared/messages";
+import { DevtoolPanel } from "@mswjs-devtools/devtools";
 
 export function App() {
   return (
@@ -8,7 +7,7 @@ export function App() {
         enabled: true,
         mocks: [],
         routes: [],
-        onCreateHandler(data: MswDevtoolsEventData["DEVTOOLS_CREATE_HANDLER"]) {
+        onCreateHandler(data) {
           console.log("onCreateHandler", data);
         },
         setSkipMock(id: string, skip: boolean) {
