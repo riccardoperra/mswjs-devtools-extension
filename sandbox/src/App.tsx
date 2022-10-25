@@ -1,12 +1,49 @@
 import { DevtoolPanel } from "@mswjs-devtools/devtools";
+import "@mswjs-devtools/devtools/dist/index.css";
 
 export function App() {
   return (
     <DevtoolPanel
       controller={{
         enabled: true,
-        mocks: [],
-        routes: [],
+        mocks: [
+          { id: "1", label: "[GET]", skip: false },
+          { id: "2", label: "[GET]", skip: false },
+          { id: "3", label: "[GET]", skip: false },
+          { id: "4", label: "[GET]", skip: false },
+        ],
+        routes: [
+          {
+            id: 0,
+            skip: false,
+            info: {
+              method: "GET",
+              path: "localhost",
+              callFrame: "",
+              header: "[GET]",
+            },
+          },
+          {
+            id: 1,
+            skip: false,
+            info: {
+              method: "POST",
+              path: "localhost",
+              callFrame: "",
+              header: "[GET]",
+            },
+          },
+          {
+            id: 2,
+            skip: false,
+            info: {
+              method: "PUT",
+              path: "localhost",
+              callFrame: "",
+              header: "[GET]",
+            },
+          },
+        ],
         onCreateHandler(data) {
           console.log("onCreateHandler", data);
         },

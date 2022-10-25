@@ -2,6 +2,7 @@ import { HighlightStyle, syntaxHighlighting } from "@codemirror/language";
 import { tags as t } from "@lezer/highlight";
 import tokens from "./dark.json";
 import { EditorView } from "@codemirror/view";
+import { Extension } from "@codemirror/state";
 
 export const parseColor = (hex: string) => {
   let color = tokens.palette[hex as keyof typeof tokens.palette] ?? hex;
@@ -128,4 +129,4 @@ export const colors = EditorView.theme(
   }
 );
 
-export const theme = [colors, syntaxHighlighting(highlightStyle)];
+export const theme: Extension[] = [colors, syntaxHighlighting(highlightStyle)];

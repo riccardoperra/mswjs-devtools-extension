@@ -3,6 +3,8 @@ import { Checkbox } from "../../components/Checkbox";
 import { SerializedRouteHandler } from "@mswjs-devtools/shared";
 import { CreateRouteHandlerForm } from "./CreateRouteHandlerForm";
 import { ScrollableWrapper } from "../../components/ScrollableWrapper/ScrollableWrapper";
+import { PencilSquareIcon } from "../../components/PencilSquareIcon";
+import { TrashIcon } from "../../components/TrashIcon";
 
 interface RoutesProps {
   routes: SerializedRouteHandler[];
@@ -29,18 +31,26 @@ export function RoutesHandler(props: VoidProps<RoutesProps>) {
           {(route) => {
             return (
               <div class={"py-2 flex items-center"}>
-                <div class="form-control">
-                  <label class="label cursor-pointer">
-                    <Checkbox
-                      checked={!route.skip}
-                      onChange={(checked) =>
-                        props.setSkipRoute(route.id, !checked)
-                      }
-                    />
-                    <span class="label-text ml-4">
-                      [{route.info.method}] {route.info.path}
-                    </span>
-                  </label>
+                <div class="flex w-full">
+                  <Checkbox
+                    checked={!route.skip}
+                    onChange={(checked) =>
+                      props.setSkipRoute(route.id, !checked)
+                    }
+                  />
+                  <span class="label-text ml-4">
+                    [{route.info.method}] {route.info.path}
+                  </span>
+
+                  <div class="flex gap-2 ml-auto">
+                    <button class="btn btn-sm btn-ghost btn-circle">
+                      <PencilSquareIcon />
+                    </button>
+
+                    <button class="btn btn-sm btn-ghost btn-circle">
+                      <TrashIcon />
+                    </button>
+                  </div>
                 </div>
               </div>
             );
