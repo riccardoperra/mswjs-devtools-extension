@@ -1,10 +1,9 @@
-import { ReloadIcon } from "../components/ReloadIcon";
+import { ReloadIcon } from "./components/ReloadIcon";
 import { createSignal, Match, Switch, VoidProps } from "solid-js";
 import { DevToolPanelController } from "./controller";
 import { MockConfigHandler } from "./pages/MockConfigHandler/MockConfigHandler";
 import { RoutesHandler } from "./pages/RoutesHandler/RoutesHandler";
 import * as styles from "./DevtoolPanel.css";
-import { tabs } from "./DevtoolPanel.css";
 
 interface DevtoolPanel {
   controller: DevToolPanelController;
@@ -66,6 +65,7 @@ export function DevtoolPanel(props: VoidProps<DevtoolPanel>) {
             <Match when={activeTab() === 0} keyed={false}>
               <RoutesHandler
                 routes={props.controller.routes}
+                createHandler={props.controller.onCreateHandler}
                 setSkipRoute={props.controller.setSkipRoute}
               />
             </Match>

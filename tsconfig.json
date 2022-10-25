@@ -26,6 +26,8 @@
     "content/**",
     "devtools/**",
     "shared/**",
+    "sandbox/**",
+    "frontend/**",
     "global.d.ts"
   ]
 }

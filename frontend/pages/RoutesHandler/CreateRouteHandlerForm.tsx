@@ -7,10 +7,9 @@ import {
   Show,
   Suspense,
 } from "solid-js";
-import { devtoolsMessenger } from "../../../devtoolsMessenger";
-import { CheckIcon } from "../../../components/CheckIcon";
-import { ExclamationTriangleIcon } from "../../../components/ExclamationTriangleIcon";
-import { SparklesIcon } from "../../../components/SparklesIcon";
+import { CheckIcon } from "../../components/CheckIcon";
+import { ExclamationTriangleIcon } from "../../components/ExclamationTriangleIcon";
+import { SparklesIcon } from "../../components/SparklesIcon";
 import { format } from "prettier";
 import parserBabel from "prettier/parser-babel";
 
@@ -27,6 +26,7 @@ const METHODS = [
 
 interface CreateRouteHandlerFormProps {
   onClose: () => void;
+  onCreate: (a: any) => void;
 }
 
 const JsonEditor = lazy(() =>
@@ -137,7 +137,7 @@ export function CreateRouteHandlerForm(props: CreateRouteHandlerFormProps) {
               onClick={() => {
                 try {
                   const response = JSON.parse(form.response);
-                  devtoolsMessenger.dispatch("DEVTOOLS_CREATE_HANDLER", {
+                  props.onCreate({
                     response,
                     url: form.url,
                     method: form.method,

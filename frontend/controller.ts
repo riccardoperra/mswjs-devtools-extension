@@ -1,7 +1,5 @@
-import {
-  SerializedMockConfig,
-  SerializedRouteHandler,
-} from "../../shared/types";
+import { SerializedMockConfig, SerializedRouteHandler } from "../shared/types";
+import { MswDevtoolsEventData } from "../shared/messages";
 
 export interface DevToolPanelController {
   enabled: boolean;
@@ -15,4 +13,6 @@ export interface DevToolPanelController {
   setSkipMock(id: string, skip: boolean): void;
 
   forceReload(): void;
+
+  onCreateHandler(data: MswDevtoolsEventData["DEVTOOLS_CREATE_HANDLER"]): void;
 }

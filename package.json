@@ -5,6 +5,7 @@
   "scripts": {
     "start": "vite",
     "dev": "vite",
+    "dev:playground": "vite serve sandbox",
     "build": "vite build",
     "serve": "vite preview"
   },

@@ -1,6 +1,6 @@
 import { For, VoidProps } from "solid-js";
-import { Checkbox } from "../../../components/Checkbox";
-import { SerializedMockConfig } from "../../../../shared/types";
+import { Checkbox } from "../../components/Checkbox";
+import { SerializedMockConfig } from "../../../shared/types";
 import { ScrollableWrapper } from "../../components/ScrollableWrapper/ScrollableWrapper";
 
 interface MockConfigHandlerProps {

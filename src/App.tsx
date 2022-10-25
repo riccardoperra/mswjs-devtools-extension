@@ -14,9 +14,10 @@ import { LoadingPage } from "./components/LoadingPage/LoadingPage";
 import { SerializedMockConfig, SerializedRouteHandler } from "../shared/types";
 import { Footer } from "./Footer";
 import * as styles from "./App.css";
+import { MswDevtoolsEventData } from "../shared/messages";
 
 const DevtoolPanel = lazy(() =>
-  import("./devtool-ui/DevtoolPanel").then((m) => ({
+  import("../frontend/DevtoolPanel").then((m) => ({
     default: m.DevtoolPanel,
   }))
 );
@@ -113,6 +114,12 @@ const App: Component = () => {
       skip,
     });
 
+  const onCreateHandler = (
+    data: MswDevtoolsEventData["DEVTOOLS_CREATE_HANDLER"]
+  ) => {
+    devtoolsMessenger.dispatch("DEVTOOLS_CREATE_HANDLER", data);
+  };
+
   return (
     <div class={styles.container}>
       <Suspense fallback={<LoadingPage />}>
@@ -141,6 +148,7 @@ const App: Component = () => {
                 forceReload() {
                   reload();
                 },
+                onCreateHandler,
               }}
             />
           </Show>
