@@ -77,7 +77,7 @@ export const colors = EditorView.theme(
       border: "none",
     },
     ".cm-content": {
-      fontFamily: "JetBrainsMono-Regular, Inter, monospace",
+      fontFamily: "JetBrains Mono, Inter, monospace",
       padding: "0px",
     },
     ".cm-gutters": {

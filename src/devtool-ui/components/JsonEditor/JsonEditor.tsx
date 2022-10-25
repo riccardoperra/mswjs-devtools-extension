@@ -76,7 +76,7 @@ export function JsonEditor(props: VoidProps<JsonEditorProps>) {
         width: "100%",
       }}
       class={"w-full h-full overflow-auto"}
-      ref={(el) => onMount(() => ref(el))}
+      ref={ref}
     />
   );
 }
