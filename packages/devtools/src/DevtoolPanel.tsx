@@ -60,12 +60,6 @@ export function DevtoolPanel(props: VoidProps<DevtoolPanel>) {
         >
           Mocks config
         </a>
-        <a
-          class={getTabClasses(2)}
-          onClick={() => setActiveTab(2)}
-        >
-          Environment
-        </a>
       </div>
 
       <div class={styles.content}>

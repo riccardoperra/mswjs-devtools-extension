@@ -36,6 +36,26 @@ if (window.__MSWJS_DEVTOOLS_EXTENSION) {
 }
 ```
 
+## Roadmap
+
+- [ ] Add handler CRUD
+- [ ] Add scenarios
+- [ ] Add Import/Export configuration
+- [ ] Add configuration persistence 
+- [ ] Add request conditions from UI
+- [ ] Import interfaces from open-api 
+- [ ] Handle mock environments 
+- [ ] Add docs
+- [ ] Remove tailwind
+
+### List all handlers
+
+![img_2.png](img_2.png)
+
+### Creating new handlers
+
+![img_3.png](img_3.png)
+
 Those templates dependencies are maintained via [pnpm](https://pnpm.io) via `pnpm up -Lri`.
 
 This is the reason you see a `pnpm-lock.yaml`. That being said, any package manager will work. This file can be safely
