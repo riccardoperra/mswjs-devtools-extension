@@ -14,7 +14,7 @@ import { LoadingPage } from "./components/LoadingPage/LoadingPage";
 import { SerializedMockConfig, SerializedRouteHandler } from "../shared/types";
 import { Footer } from "./Footer";
 import * as styles from "./App.css";
-import { MswDevtoolsEventData } from "../shared/messages";
+import { type MswDevtoolsEventData } from "@mswjs-devtools/shared";
 const DevtoolPanel = lazy(() =>
   import("@mswjs-devtools/devtools").then((m) => ({
     default: m.DevtoolPanel,
@@ -122,8 +122,16 @@ const App: Component = () => {
   return (
     <div class={styles.container}>
       <Suspense fallback={<LoadingPage />}>
-        <Show fallback={<LoadingPage />} when={!loading()} keyed={false}>
-          <Show fallback={<NotDetected />} when={detected()} keyed={false}>
+        <Show
+          fallback={<LoadingPage />}
+          when={!loading()}
+          keyed={false}
+        >
+          <Show
+            fallback={<NotDetected />}
+            when={detected()}
+            keyed={false}
+          >
             <DevtoolPanel
               controller={{
                 enabled: enabled(),

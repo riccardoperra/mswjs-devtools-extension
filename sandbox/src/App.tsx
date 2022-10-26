@@ -1,7 +1,41 @@
 import { DevtoolPanel } from "@mswjs-devtools/devtools";
 import "@mswjs-devtools/devtools/dist/index.css";
+import { createStore } from "solid-js/store";
 
 export function App() {
+  const [routes, setRoutes] = createStore([
+    {
+      id: 0,
+      skip: false,
+      info: {
+        method: "GET",
+        path: "localhost",
+        callFrame: "",
+        header: "[GET]",
+      },
+    },
+    {
+      id: 1,
+      skip: false,
+      info: {
+        method: "POST",
+        path: "localhost",
+        callFrame: "",
+        header: "[GET]",
+      },
+    },
+    {
+      id: 2,
+      skip: false,
+      info: {
+        method: "PUT",
+        path: "localhost",
+        callFrame: "",
+        header: "[GET]",
+      },
+    },
+  ]);
+
   return (
     <DevtoolPanel
       controller={{
@@ -12,38 +46,7 @@ export function App() {
           { id: "3", label: "[GET]", skip: false },
           { id: "4", label: "[GET]", skip: false },
         ],
-        routes: [
-          {
-            id: 0,
-            skip: false,
-            info: {
-              method: "GET",
-              path: "localhost",
-              callFrame: "",
-              header: "[GET]",
-            },
-          },
-          {
-            id: 1,
-            skip: false,
-            info: {
-              method: "POST",
-              path: "localhost",
-              callFrame: "",
-              header: "[GET]",
-            },
-          },
-          {
-            id: 2,
-            skip: false,
-            info: {
-              method: "PUT",
-              path: "localhost",
-              callFrame: "",
-              header: "[GET]",
-            },
-          },
-        ],
+        routes,
         onCreateHandler(data) {
           console.log("onCreateHandler", data);
         },
@@ -58,6 +61,10 @@ export function App() {
         },
         forceReload() {
           console.log("force reload");
+        },
+        onDeleteHandler(id: number) {
+          console.log("DELETE ROUTE", id);
+          setRoutes((routes) => routes.filter((route) => route.id !== id));
         },
       }}
     />

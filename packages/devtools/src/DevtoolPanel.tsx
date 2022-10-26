@@ -48,13 +48,22 @@ export function DevtoolPanel(props: VoidProps<DevtoolPanel>) {
       </div>
 
       <div class={`tabs tabs-boxed px-4 ${styles.tabs}`}>
-        <a class={getTabClasses(0)} onClick={() => setActiveTab(0)}>
+        <a
+          class={getTabClasses(0)}
+          onClick={() => setActiveTab(0)}
+        >
           Routes
         </a>
-        <a class={getTabClasses(1)} onClick={() => setActiveTab(1)}>
+        <a
+          class={getTabClasses(1)}
+          onClick={() => setActiveTab(1)}
+        >
           Mocks config
         </a>
-        <a class={getTabClasses(2)} onClick={() => setActiveTab(2)}>
+        <a
+          class={getTabClasses(2)}
+          onClick={() => setActiveTab(2)}
+        >
           Environment
         </a>
       </div>
@@ -62,15 +71,22 @@ export function DevtoolPanel(props: VoidProps<DevtoolPanel>) {
       <div class={styles.content}>
         <fieldset disabled={!props.controller.enabled}>
           <Switch>
-            <Match when={activeTab() === 0} keyed={false}>
+            <Match
+              when={activeTab() === 0}
+              keyed={false}
+            >
               <RoutesHandler
                 routes={props.controller.routes}
                 createHandler={props.controller.onCreateHandler}
                 setSkipRoute={props.controller.setSkipRoute}
+                onDeleteHandler={props.controller.onDeleteHandler}
               />
             </Match>
 
-            <Match when={activeTab() === 1} keyed={false}>
+            <Match
+              when={activeTab() === 1}
+              keyed={false}
+            >
               <MockConfigHandler
                 mocks={props.controller.mocks}
                 setSkipMock={props.controller.setSkipMock}

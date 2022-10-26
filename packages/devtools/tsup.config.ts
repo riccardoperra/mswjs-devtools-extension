@@ -1,7 +1,6 @@
 import { vanillaExtractPlugin } from "@vanilla-extract/esbuild-plugin";
 import postcss from "postcss";
 import autoprefixer from "autoprefixer";
-
 import { defineConfig, Options } from "tsup";
 import { solidPlugin } from "esbuild-plugin-solid";
 

@@ -1,19 +1,27 @@
 import { createSignal, For, Show, VoidProps } from "solid-js";
 import { Checkbox } from "../../components/Checkbox";
-import { SerializedRouteHandler } from "@mswjs-devtools/shared";
+import {
+  DevtoolsHandler,
+  SerializedRouteHandler,
+} from "@mswjs-devtools/shared";
 import { CreateRouteHandlerForm } from "./CreateRouteHandlerForm";
 import { ScrollableWrapper } from "../../components/ScrollableWrapper/ScrollableWrapper";
 import { PencilSquareIcon } from "../../components/PencilSquareIcon";
 import { TrashIcon } from "../../components/TrashIcon";
+import { RouteMethodBadge } from "./RouteMethodBadge/RouteMethodBadge";
+import { RouteInfoLabel } from "./RouteInfoLabel/RouteInfoLabel";
 
 interface RoutesProps {
   routes: SerializedRouteHandler[];
   setSkipRoute: (id: number, skip: boolean) => void;
-  createHandler: (any: any) => void;
+  createHandler: (route: DevtoolsHandler) => void;
+  onDeleteHandler: (id: number) => void;
 }
 
 export function RoutesHandler(props: VoidProps<RoutesProps>) {
   const [showCreateForm, setShowCreateForm] = createSignal(false);
+  const [editingRoute, setEditingRoute] =
+    createSignal<SerializedRouteHandler | null>(null);
 
   return (
     <div class={"flex flex-col h-full"}>
@@ -30,24 +38,32 @@ export function RoutesHandler(props: VoidProps<RoutesProps>) {
         <For each={props.routes}>
           {(route) => {
             return (
-              <div class={"py-2 flex items-center"}>
-                <div class="flex w-full">
+              <div class="py-2 flex items-center border-b border-base-content border-opacity-25">
+                <div class="flex w-full items-center gap-4">
                   <Checkbox
                     checked={!route.skip}
                     onChange={(checked) =>
                       props.setSkipRoute(route.id, !checked)
                     }
                   />
-                  <span class="label-text ml-4">
-                    [{route.info.method}] {route.info.path}
-                  </span>
+
+                  <RouteInfoLabel
+                    method={route.info.method as any}
+                    label={route.info.path as any}
+                  />
 
                   <div class="flex gap-2 ml-auto">
-                    <button class="btn btn-sm btn-ghost btn-circle">
+                    <button
+                      class="btn btn-sm btn-ghost btn-circle"
+                      onClick={() => setEditingRoute(route)}
+                    >
                       <PencilSquareIcon />
                     </button>
 
-                    <button class="btn btn-sm btn-ghost btn-circle">
+                    <button
+                      class="btn btn-sm btn-ghost btn-circle"
+                      onClick={() => props.onDeleteHandler(route.id)}
+                    >
                       <TrashIcon />
                     </button>
                   </div>
@@ -57,11 +73,31 @@ export function RoutesHandler(props: VoidProps<RoutesProps>) {
           }}
         </For>
       </ScrollableWrapper>
+
       <Show when={showCreateForm()}>
         <CreateRouteHandlerForm
           onCreate={props.createHandler}
           onClose={() => setShowCreateForm(false)}
         />
+      </Show>
+
+      <Show when={showCreateForm()}>
+        <CreateRouteHandlerForm
+          onCreate={props.createHandler}
+          onClose={() => setShowCreateForm(false)}
+        />
+      </Show>
+      <Show
+        when={editingRoute()}
+        keyed={true}
+      >
+        {(editingRoute) => (
+          <CreateRouteHandlerForm
+            initialValue={editingRoute}
+            onCreate={props.createHandler}
+            onClose={() => setEditingRoute(null)}
+          />
+        )}
       </Show>
     </div>
   );

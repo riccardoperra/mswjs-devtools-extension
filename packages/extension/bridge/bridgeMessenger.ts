@@ -1,5 +1,5 @@
-import { MswDevtoolsEventData } from "../shared/messages";
-import { createMessenger, GenericMessage, Message } from "../shared/messanger";
+import { type MswDevtoolsEventData } from "@mswjs-devtools/shared";
+import { createMessenger, GenericMessage } from "../shared/messanger";
 
 /**
  * Handle communication messages to Bridge received from content-script.

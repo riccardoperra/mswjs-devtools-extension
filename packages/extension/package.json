@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@mswjs-devtools/devtools": "workspace:*",
+    "@mswjs-devtools/shared": "workspace:*",
     "msw": "^0.47.4",
     "solid-js": "^1.6.0"
   }

@@ -1,5 +1,5 @@
 import {
-  MswDevtoolsEventData,
+  DevtoolsHandler,
   SerializedMockConfig,
   SerializedRouteHandler,
 } from "@mswjs-devtools/shared";
@@ -17,5 +17,7 @@ export interface DevToolPanelController {
 
   forceReload(): void;
 
-  onCreateHandler(data: MswDevtoolsEventData["DEVTOOLS_CREATE_HANDLER"]): void;
+  onCreateHandler(data: DevtoolsHandler): void;
+
+  onDeleteHandler(id: number): void;
 }

@@ -1,5 +1,5 @@
 import { createMessenger, GenericMessage } from "../shared/messanger";
-import { MswDevtoolsEventData } from "../shared/messages";
+import { type MswDevtoolsEventData } from "@mswjs-devtools/shared";
 
 /**
  * Handle communication messages from both bridge and devtools.

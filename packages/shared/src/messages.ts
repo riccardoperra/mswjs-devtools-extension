@@ -1,6 +1,15 @@
 import { StartOptions } from "msw";
 import { SerializedMockConfig, SerializedRouteHandler } from "./types";
 
+export interface DevtoolsHandler {
+  method: string;
+  url: string;
+  response: string;
+  status: number;
+  delay: number | null;
+  description: string;
+}
+
 export type MswDevtoolsEventData = {
   BRIDGE_CHECK_MSW: {
     detected: boolean;
@@ -22,9 +31,5 @@ export type MswDevtoolsEventData = {
   DEVTOOLS_UPDATE_ROUTE: { id: number; skip: boolean };
   DEVTOOLS_UPDATE_MOCK_CONFIGURATION: { id: string; skip: boolean };
 
-  DEVTOOLS_CREATE_HANDLER: {
-    response: string;
-    url: string;
-    method: string;
-  };
+  DEVTOOLS_CREATE_HANDLER: DevtoolsHandler;
 };

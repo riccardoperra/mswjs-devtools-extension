@@ -956,8 +956,7 @@
       "fgColor": "Grey-80",
       "layer": 60
     },
-    "transparent": {
-    }
+    "transparent": {}
   },
   "palette": {
     "white": "ffffff",

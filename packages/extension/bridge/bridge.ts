@@ -1,19 +1,18 @@
-import { RequestHandler, rest, SetupWorkerApi } from "msw";
+import { RequestHandler, SetupWorkerApi } from "msw";
 import { MswDevtoolsExtension } from "../shared/extension";
 import { logHandler } from "./logHandler";
 import { bridgeMessenger } from "./bridgeMessenger";
 import { logMock } from "./logMock";
 import { MockConfig, SerializedRouteHandler } from "../shared/types";
 import { toTitleCase } from "../shared/toTitleCase";
+import { createHandler } from "@mswjs-devtools/shared";
 
 let handlerList: readonly RequestHandler[];
-let initializedFromConsumer: boolean = false;
 
 const __MSWJS_DEVTOOLS_EXTENSION: MswDevtoolsExtension = {
   msw: undefined,
   detected: undefined,
   async configure(msw, mocks) {
-    initializedFromConsumer = true;
     this.msw = msw;
 
     let initialized = false;
@@ -123,15 +122,10 @@ const __MSWJS_DEVTOOLS_EXTENSION: MswDevtoolsExtension = {
     );
 
     bridgeMessenger.on("DEVTOOLS_CREATE_HANDLER", ({ payload }) => {
-      const { method, url, response } = payload;
-
-      const resolver = rest[method.toLowerCase() as keyof typeof rest](
-        url,
-        (req, res, ctx) => {
-          return res(ctx.json(response));
-        }
-      );
-
+      const resolver = createHandler(payload);
+      if (!resolver) {
+        return;
+      }
       msw.use(resolver);
     });
 
