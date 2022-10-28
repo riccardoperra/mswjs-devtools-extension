@@ -1,20 +1,17 @@
 import { createSignal, For, Show, VoidProps } from "solid-js";
 import { Checkbox } from "../../components/Checkbox";
-import {
-  DevtoolsHandler,
-  SerializedRouteHandler,
-} from "@mswjs-devtools/shared";
+import { DevtoolsRoute, SerializedRouteHandler } from "@mswjs-devtools/shared";
 import { CreateRouteHandlerForm } from "./CreateRouteHandlerForm";
 import { ScrollableWrapper } from "../../components/ScrollableWrapper/ScrollableWrapper";
 import { PencilSquareIcon } from "../../components/PencilSquareIcon";
 import { TrashIcon } from "../../components/TrashIcon";
-import { RouteMethodBadge } from "./RouteMethodBadge/RouteMethodBadge";
 import { RouteInfoLabel } from "./RouteInfoLabel/RouteInfoLabel";
+import { EnhancedDevtoolsRoute } from "@mswjs-devtools/shared/src";
 
 interface RoutesProps {
-  routes: SerializedRouteHandler[];
+  routes: EnhancedDevtoolsRoute[];
   setSkipRoute: (id: number, skip: boolean) => void;
-  createHandler: (route: DevtoolsHandler) => void;
+  createHandler: (route: DevtoolsRoute) => void;
   onDeleteHandler: (id: number) => void;
 }
 
@@ -48,8 +45,8 @@ export function RoutesHandler(props: VoidProps<RoutesProps>) {
                   />
 
                   <RouteInfoLabel
-                    method={route.info.method as any}
-                    label={route.info.path as any}
+                    method={route.method as any}
+                    label={route.url ?? ""}
                   />
 
                   <div class="flex gap-2 ml-auto">
@@ -81,12 +78,6 @@ export function RoutesHandler(props: VoidProps<RoutesProps>) {
         />
       </Show>
 
-      <Show when={showCreateForm()}>
-        <CreateRouteHandlerForm
-          onCreate={props.createHandler}
-          onClose={() => setShowCreateForm(false)}
-        />
-      </Show>
       <Show
         when={editingRoute()}
         keyed={true}

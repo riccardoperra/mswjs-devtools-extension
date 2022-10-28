@@ -15,19 +15,16 @@ import { ExclamationTriangleIcon } from "../../components/ExclamationTriangleIco
 import { SparklesIcon } from "../../components/SparklesIcon";
 import { format } from "prettier";
 import parserBabel from "prettier/parser-babel";
-import {
-  DevtoolsHandler,
-  SerializedRouteHandler,
-} from "@mswjs-devtools/shared";
+import { DevtoolsRoute, routeMethods } from "@mswjs-devtools/shared";
 import { PlusIcon } from "../../components/PlusIcon";
 
 import { StatusCodes } from "./status";
-import { routeMethods } from "../../constants/method";
+import { EnhancedDevtoolsRoute } from "@mswjs-devtools/shared/src";
 
 interface CreateRouteHandlerFormProps {
-  initialValue?: SerializedRouteHandler;
+  initialValue?: EnhancedDevtoolsRoute;
   onClose: () => void;
-  onCreate: (route: DevtoolsHandler) => void;
+  onCreate: (route: DevtoolsRoute) => void;
 }
 
 const JsonEditor = lazy(() =>
@@ -39,21 +36,25 @@ const JsonEditor = lazy(() =>
 export function CreateRouteHandlerForm(props: CreateRouteHandlerFormProps) {
   const [routeTab] = createSignal(0);
 
-  const [form, setForm] = createStore<DevtoolsHandler>({
+  const [form, setForm] = createStore<DevtoolsRoute>({
     method: routeMethods[0],
     url: "",
-    response: "{}",
-    status: 200,
-    delay: 0,
-    description: "",
+    handlers: [
+      {
+        response: "",
+        status: 200,
+        delay: 0,
+        description: "Lorem ipsum",
+      },
+    ],
   });
 
   createEffect(() => {
     if (props.initialValue) {
       setForm({
-        method: props.initialValue.info.method,
-        url: props.initialValue.info.path,
-        response: "",
+        method: props.initialValue.method,
+        url: props.initialValue.url,
+        handlers: props.initialValue.handlers ?? [],
       });
     }
   });
@@ -61,7 +62,7 @@ export function CreateRouteHandlerForm(props: CreateRouteHandlerFormProps) {
   createEffect(() => console.log(JSON.stringify(form)));
 
   const responseIsValid = () => {
-    const response = form.response;
+    const response = form.handlers[0].response;
     try {
       JSON.parse(response);
       return true;
@@ -71,28 +72,33 @@ export function CreateRouteHandlerForm(props: CreateRouteHandlerFormProps) {
   };
 
   const isValid = () =>
-    form.method && form.url && form.response && responseIsValid();
+    form.method && form.url && form.handlers[0].response && responseIsValid();
 
   const formatJson = () => {
-    const formattedResponse = format(form.response, {
+    const formattedResponse = format(form.handlers[0].response, {
       tabWidth: 2,
       printWidth: 100,
       parser: "json",
       plugins: [parserBabel],
     });
-    setForm("response", formattedResponse);
+    setForm("handlers", 0, "response", formattedResponse);
   };
 
   function onSubmit(): void {
     try {
-      const response = JSON.parse(form.response);
+      const handler = form.handlers[0];
+      const response = JSON.parse(handler.response);
       props.onCreate({
-        response,
         url: form.url,
         method: form.method,
-        delay: form.delay,
-        status: form.status,
-        description: form.description,
+        handlers: [
+          {
+            response,
+            delay: handler.delay,
+            status: handler.status,
+            description: handler.description,
+          },
+        ],
       });
       props.onClose();
     } catch (e) {
@@ -181,129 +187,150 @@ export function CreateRouteHandlerForm(props: CreateRouteHandlerFormProps) {
           </div>
         </div>
       </div>
-      <div
-        class={
-          "mt-2 px-4 py-2 border-y border-opacity-20 border-base-content flex items-center gap-2 bg-base-100"
-        }
+
+      <Show
+        when={form.handlers[0]}
+        keyed={true}
       >
-        <button class={"btn btn-primary btn-square btn-sm gap-2"}>
-          <PlusIcon />
-        </button>
+        {(handler) => (
+          <>
+            <div
+              class={
+                "mt-2 px-4 py-2 border-y border-opacity-20 border-base-content flex items-center gap-2 bg-base-100"
+              }
+            >
+              <button class={"btn btn-primary btn-square btn-sm gap-2"}>
+                <PlusIcon />
+              </button>
 
-        <div class="form-control w-full">
-          <select class="select select-sm select-bordered">
-            <option selected>
-              Default response ({form.status}) -{" "}
-              {form.description || "No description"}
-            </option>
-          </select>
-        </div>
-      </div>
-      <Switch>
-        <Match when={routeTab() === 0}>
-          <div class={"px-4 py-2 flex gap-2 bg-base-100 shadow"}>
-            <div class="form-control flex-row items-center gap-2">
-              <label class="label">
-                <span class="label-text">Status</span>
-              </label>
-              <select
-                class="select select-sm select-bordered w-[200px]"
-                value={form.status}
-                onChange={(event) =>
-                  setForm(
-                    "status",
-                    () => event.currentTarget.value as unknown as number
-                  )
-                }
-              >
-                <For each={StatusCodes}>
-                  {(status) => (
-                    <option
-                      label={status.label}
-                      value={status.value}
+              <div class="form-control w-full">
+                <select class="select select-sm select-bordered">
+                  <option selected>
+                    Default response ({handler.status}) -{" "}
+                    {handler.description || "No description"}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <Switch>
+              <Match when={routeTab() === 0}>
+                <div class={"px-4 py-2 flex gap-2 bg-base-100 shadow"}>
+                  <div class="form-control flex-row items-center gap-2">
+                    <label class="label">
+                      <span class="label-text">Status</span>
+                    </label>
+                    <select
+                      class="select select-sm select-bordered w-[200px]"
+                      value={handler.status}
+                      onChange={(event) =>
+                        setForm(
+                          "handlers",
+                          0,
+                          "status",
+                          () => event.currentTarget.value as unknown as number
+                        )
+                      }
                     >
-                      {status.label}
-                    </option>
-                  )}
-                </For>
-              </select>
-            </div>
+                      <For each={StatusCodes}>
+                        {(status) => (
+                          <option
+                            label={status.label}
+                            value={status.value}
+                          >
+                            {status.label}
+                          </option>
+                        )}
+                      </For>
+                    </select>
+                  </div>
 
-            <div class="form-control flex-row items-center gap-2">
-              <label class="label">
-                <span class="label-text">Description</span>
-              </label>
-              <input
-                type="text"
-                placeholder="Description"
-                class="input input-sm input-bordered w-full max-w-xs"
-                value={form.description}
-                onInput={(event) =>
-                  setForm("description", event.currentTarget.value)
-                }
-              />
-            </div>
+                  <div class="form-control flex-row items-center gap-2">
+                    <label class="label">
+                      <span class="label-text">Description</span>
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Description"
+                      class="input input-sm input-bordered w-full max-w-xs"
+                      value={handler.description}
+                      onInput={(event) =>
+                        setForm(
+                          "handlers",
+                          0,
+                          "description",
+                          event.currentTarget.value
+                        )
+                      }
+                    />
+                  </div>
 
-            <div class="form-control flex-row items-center gap-2">
-              <label class="label">
-                <span class="label-text">Delay (ms)</span>
-              </label>
-              <input
-                type="number"
-                placeholder="ms"
-                value={form.delay ?? 0}
-                onInput={(event) =>
-                  setForm(
-                    "delay",
-                    event.currentTarget.value
-                      ? parseInt(event.currentTarget.value, 10)
-                      : null
-                  )
-                }
-                class="input input-sm input-bordered w-[100px]"
-              />
-            </div>
-          </div>
-
-          <div
-            class={
-              "px-4 border-y border-opacity-20 border-base-content flex items-center"
-            }
-          >
-            <label class="label">
-              <span class="label-text">Response body</span>
-            </label>
-            <div class={"ml-auto"}>
-              <Show
-                fallback={
-                  <span class={"text-yellow-500"}>
-                    <ExclamationTriangleIcon />
-                  </span>
-                }
-                when={responseIsValid()}
-                keyed={false}
-              >
-                <span class={"text-green-500"}>
-                  <CheckIcon />
-                </span>
-              </Show>
-            </div>
-          </div>
-          <div class={"d-flex h-full relative"}>
-            <ErrorBoundary fallback={(e) => <div>{e}</div>}>
-              <Suspense>
-                <div class={"absolute w-full h-full"}>
-                  <JsonEditor
-                    value={form.response}
-                    onSave={formatJson}
-                    onValueChange={(value) => setForm("response", value)}
-                  />
+                  <div class="form-control flex-row items-center gap-2">
+                    <label class="label">
+                      <span class="label-text">Delay (ms)</span>
+                    </label>
+                    <input
+                      type="number"
+                      placeholder="ms"
+                      value={handler.delay ?? 0}
+                      onInput={(event) =>
+                        setForm(
+                          "handlers",
+                          0,
+                          "delay",
+                          event.currentTarget.value
+                            ? parseInt(event.currentTarget.value, 10)
+                            : null
+                        )
+                      }
+                      class="input input-sm input-bordered w-[100px]"
+                    />
+                  </div>
                 </div>
-              </Suspense>
-            </ErrorBoundary>
-          </div>
-        </Match>
-      </Switch>
+
+                <div
+                  class={
+                    "px-4 border-y border-opacity-20 border-base-content flex items-center"
+                  }
+                >
+                  <label class="label">
+                    <span class="label-text">Response body</span>
+                  </label>
+                  <div class={"ml-auto"}>
+                    <Show
+                      fallback={
+                        <span class={"text-yellow-500"}>
+                          <ExclamationTriangleIcon />
+                        </span>
+                      }
+                      when={responseIsValid()}
+                      keyed={false}
+                    >
+                      <span class={"text-green-500"}>
+                        <CheckIcon />
+                      </span>
+                    </Show>
+                  </div>
+                </div>
+                <div class={"d-flex h-full relative"}>
+                  <ErrorBoundary fallback={(e) => <div>{e}</div>}>
+                    <Suspense>
+                      <div class={"absolute w-full h-full"}>
+                        <JsonEditor
+                          value={handler.response}
+                          onSave={formatJson}
+                          onValueChange={(value) =>
+                            setForm("handlers", 0, "response", value)
+                          }
+                        />
+                      </div>
+                    </Suspense>
+                  </ErrorBoundary>
+                </div>
+              </Match>
+            </Switch>
+          </>
+        )}
+      </Show>
     </div>
   );
 }

@@ -1,14 +1,9 @@
 import { StartOptions } from "msw";
-import { SerializedMockConfig, SerializedRouteHandler } from "./types";
-
-export interface DevtoolsHandler {
-  method: string;
-  url: string;
-  response: string;
-  status: number;
-  delay: number | null;
-  description: string;
-}
+import {
+  DevtoolsHandler,
+  SerializedMockConfig,
+  SerializedRouteHandler,
+} from "./types";
 
 export type MswDevtoolsEventData = {
   BRIDGE_CHECK_MSW: {

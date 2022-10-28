@@ -1,10 +1,11 @@
-import { DevtoolsHandler } from "./messages";
+import { DevtoolsRoute } from "./types";
 import { compose, context, RequestHandler, rest } from "msw";
 
 type RestMethodHandler = typeof rest[keyof typeof rest];
 
-export function createHandler(handler: DevtoolsHandler): RequestHandler | null {
-  const { method, url, response, status, delay } = handler;
+export function createHandler(handler: DevtoolsRoute): RequestHandler | null {
+  const { method, url } = handler;
+  const { response, status, delay } = handler.handlers[0];
 
   const restHandler = resolveRestHandler(method);
 

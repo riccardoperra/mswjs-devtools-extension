@@ -1,5 +1,5 @@
 import * as styles from "./RouteMethodBadge.css";
-import { RouteMethods } from "../../../constants/method";
+import { RouteMethods } from "../../../../../shared/src/constants/method";
 
 interface RouteMethodBadgeProps {
   method: RouteMethods;

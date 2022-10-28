@@ -26,6 +26,7 @@
   "main": "dist/index.cjs",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
+  "source": "./src/index.tsx",
   "scripts": {
     "dev": "tsup --watch",
     "build": "tsup",

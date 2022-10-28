@@ -1,4 +1,4 @@
-import { RouteMethods } from "../../../constants/method";
+import { RouteMethods } from "@mswjs-devtools/shared";
 import { Show, VoidProps } from "solid-js";
 import { RouteMethodBadge } from "../RouteMethodBadge/RouteMethodBadge";
 import * as styles from "./RouteInfoLabel.css";

@@ -1,5 +1,5 @@
 import {
-  DevtoolsHandler,
+  DevtoolsRoute,
   SerializedMockConfig,
   SerializedRouteHandler,
 } from "@mswjs-devtools/shared";
@@ -17,7 +17,7 @@ export interface DevToolPanelController {
 
   forceReload(): void;
 
-  onCreateHandler(data: DevtoolsHandler): void;
+  onCreateHandler(data: DevtoolsRoute): void;
 
   onDeleteHandler(id: number): void;
 }

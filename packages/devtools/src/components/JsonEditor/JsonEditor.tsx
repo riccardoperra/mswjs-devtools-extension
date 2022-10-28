@@ -30,10 +30,12 @@ interface JsonEditorProps {
 export function JsonEditor(props: VoidProps<JsonEditorProps>) {
   const { ref, createExtension, editorView } = createCodeMirror({
     onValueChange: props.onValueChange,
-    value: props.value,
   });
 
-  createEditorControlledValue(editorView, () => props.value);
+  createEditorControlledValue(editorView, () =>
+    typeof props.value === "string" ? props.value : JSON.stringify(props.value)
+  );
+
   createEditorFocus(editorView, (focused) => {
     if (!focused) {
       props.onSave();
