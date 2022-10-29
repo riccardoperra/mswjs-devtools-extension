@@ -24,6 +24,7 @@ export interface DevtoolsRoute {
   readonly url: string;
   readonly method: string;
   readonly handlers: readonly DevtoolsHandler[];
+  readonly selectedHandler?: number;
 }
 
 export interface DevtoolsHandler {

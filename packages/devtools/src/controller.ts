@@ -1,12 +1,12 @@
 import {
   DevtoolsRoute,
+  EnhancedDevtoolsRoute,
   SerializedMockConfig,
-  SerializedRouteHandler,
 } from "@mswjs-devtools/shared";
 
 export interface DevToolPanelController {
   enabled: boolean;
-  routes: SerializedRouteHandler[];
+  routes: EnhancedDevtoolsRoute[];
   mocks: SerializedMockConfig[];
 
   setEnabled(enabled: boolean): void;
