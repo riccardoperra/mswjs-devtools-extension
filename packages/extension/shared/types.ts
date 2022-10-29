@@ -1,7 +1,7 @@
 import { RequestHandler } from "msw";
 
 export interface SerializedRouteHandler {
-  id: number;
+  id: string;
   info: RequestHandler["info"] & { method?: string; path?: string };
   skip: boolean;
 }

@@ -3,9 +3,13 @@ import { MswDevtoolsExtension } from "../shared/extension";
 import { logHandler } from "./logHandler";
 import { bridgeMessenger } from "./bridgeMessenger";
 import { logMock } from "./logMock";
-import { MockConfig, SerializedRouteHandler } from "../shared/types";
+import { MockConfig } from "../shared/types";
 import { toTitleCase } from "../shared/toTitleCase";
-import { createHandler } from "@mswjs-devtools/shared";
+import {
+  createHandler,
+  EnhancedDevtoolsRoute,
+  generateUUID,
+} from "@mswjs-devtools/shared";
 
 let handlerList: readonly RequestHandler[];
 
@@ -129,6 +133,8 @@ const __MSWJS_DEVTOOLS_EXTENSION: MswDevtoolsExtension = {
       msw.use(resolver);
     });
 
+    bridgeMessenger.on("DEVTOOLS_UPDATE_ROUTE", ({ payload }) => {});
+
     init(msw, initialized, mocks);
   },
 };
@@ -154,10 +160,13 @@ function init(
 
 function buildSerializedRouteHandlers(
   handlers: readonly RequestHandler[]
-): SerializedRouteHandler[] {
-  return handlers.map((handler, index) => {
+): EnhancedDevtoolsRoute[] {
+  return handlers.map((handler) => {
     return {
-      id: index,
+      id: generateUUID(),
+      handlers: [],
+      url: (handler.info as any)["path"],
+      method: (handler.info as any)["method"],
       skip: handler.shouldSkip,
       info: handler.info,
     };

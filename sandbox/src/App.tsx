@@ -1,51 +1,36 @@
 import { DevtoolPanel } from "@mswjs-devtools/devtools";
 import "@mswjs-devtools/devtools/dist/index.css";
-import { EnhancedDevtoolsRoute } from "@mswjs-devtools/shared";
+import { EnhancedDevtoolsRoute, generateUUID } from "@mswjs-devtools/shared";
+import { RequestHandler } from "msw";
 import { createStore } from "solid-js/store";
+import { worker } from "./mocks/browser";
+import { api } from "./mocks/handlers";
 
-function* createIncremental(): IterableIterator<number> {
-  let count = 0;
-  while (true) {
-    yield ++count;
-  }
+function buildSerializedRouteHandlers(
+  handlers: readonly RequestHandler[]
+): EnhancedDevtoolsRoute[] {
+  return handlers.map((handler) => {
+    return {
+      id: generateUUID(),
+      handlers: [],
+      url: (handler.info as any)["path"],
+      method: (handler.info as any)["method"],
+      skip: handler.shouldSkip,
+      info: handler.info,
+    };
+  });
 }
 
-const incremental = createIncremental();
+worker.start();
 
 export function App() {
-  const [routes, setRoutes] = createStore<EnhancedDevtoolsRoute[]>([
-    {
-      id: 0,
-      skip: false,
-      selectedHandler: 0,
-      url: "http://jsonplaceholder.com",
-      method: "GET",
-      custom: true,
-      handlers: [
-        {
-          description: "Handler",
-          status: 200,
-          delay: 0,
-          response: "{}",
-        },
-      ],
-    },
-    {
-      id: 1,
-      skip: false,
-      selectedHandler: 0,
-      url: "http://jsonplaceholder.com",
-      method: "POST",
-      handlers: [
-        {
-          description: "Handler",
-          status: 200,
-          delay: 0,
-          response: "{}",
-        },
-      ],
-    },
-  ]);
+  const [routes, setRoutes] = createStore<EnhancedDevtoolsRoute[]>(
+    buildSerializedRouteHandlers(worker.listHandlers())
+  );
+
+  setInterval(() => {
+    fetch(api.fetchAllTodos).then((res) => res.json());
+  }, 2000);
 
   return (
     <DevtoolPanel
@@ -78,13 +63,13 @@ export function App() {
         setEnabled(enabled: boolean) {
           console.log("enabled", enabled);
         },
-        setSkipRoute(id: number, skip: boolean) {
+        setSkipRoute(id: string, skip: boolean) {
           console.log("setSkipRoute", id, skip);
         },
         forceReload() {
           console.log("force reload");
         },
-        onDeleteHandler(id: number) {
+        onDeleteHandler(id: string) {
           console.log("DELETE ROUTE", id);
           setRoutes((routes) => routes.filter((route) => route.id !== id));
         },

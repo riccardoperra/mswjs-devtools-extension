@@ -14,7 +14,11 @@ import { LoadingPage } from "./components/LoadingPage/LoadingPage";
 import { SerializedMockConfig, SerializedRouteHandler } from "../shared/types";
 import { Footer } from "./Footer";
 import * as styles from "./App.css";
-import { type MswDevtoolsEventData } from "@mswjs-devtools/shared";
+import {
+  EnhancedDevtoolsRoute,
+  type MswDevtoolsEventData,
+} from "@mswjs-devtools/shared";
+
 const DevtoolPanel = lazy(() =>
   import("@mswjs-devtools/devtools").then((m) => ({
     default: m.DevtoolPanel,
@@ -26,7 +30,7 @@ const App: Component = () => {
   const [loading, setLoading] = createSignal(true);
   const [detected, setDetected] = createSignal(false);
   const [enabled, setEnabled] = createSignal(false);
-  const [handlers, setHandlers] = createSignal<SerializedRouteHandler[]>([]);
+  const [handlers, setHandlers] = createSignal<EnhancedDevtoolsRoute[]>([]);
 
   const [mockConfigurations, setMockConfigurations] = createSignal<
     SerializedMockConfig[]
@@ -104,7 +108,7 @@ const App: Component = () => {
     devtoolsMessenger.dispatch("DEVTOOLS_MOUNT", undefined);
   };
 
-  const setSkipRoute = (id: number, skip: boolean) =>
+  const setSkipRoute = (id: string, skip: boolean) =>
     devtoolsMessenger.dispatch("DEVTOOLS_UPDATE_ROUTE", { id, skip });
 
   const setSkipMock = (id: string, skip: boolean) =>
@@ -117,6 +121,19 @@ const App: Component = () => {
     data: MswDevtoolsEventData["DEVTOOLS_CREATE_HANDLER"]
   ) => {
     devtoolsMessenger.dispatch("DEVTOOLS_CREATE_HANDLER", data);
+  };
+
+  const onDeleteHandler = (
+    data: MswDevtoolsEventData["DEVTOOLS_DELETE_HANDLER"]
+  ) => {
+    devtoolsMessenger.dispatch("DEVTOOLS_DELETE_HANDLER", data);
+  };
+
+  const onEditHandler = (
+    id: string,
+    data: MswDevtoolsEventData["DEVTOOLS_UPDATE_ROUTE"] | any
+  ) => {
+    devtoolsMessenger.dispatch("DEVTOOLS_UPDATE_ROUTE", data);
   };
 
   return (
@@ -139,7 +156,7 @@ const App: Component = () => {
                 get routes() {
                   return handlers();
                 },
-                setSkipRoute(id: number, skip: boolean) {
+                setSkipRoute(id: string, skip: boolean) {
                   setSkipRoute(id, skip);
                 },
                 setSkipMock(id: string, skip: boolean) {
@@ -156,6 +173,8 @@ const App: Component = () => {
                   reload();
                 },
                 onCreateHandler,
+                onEditHandler,
+                onDeleteHandler,
               }}
             />
           </Show>
