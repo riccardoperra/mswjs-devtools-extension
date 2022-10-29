@@ -10,10 +10,10 @@ import { EnhancedDevtoolsRoute } from "@mswjs-devtools/shared/src";
 
 interface RoutesProps {
   routes: EnhancedDevtoolsRoute[];
-  setSkipRoute: (id: number, skip: boolean) => void;
+  setSkipRoute: (id: string, skip: boolean) => void;
   createHandler: (route: DevtoolsRoute) => void;
-  editHandler: (id: number, route: DevtoolsRoute) => void;
-  onDeleteHandler: (id: number) => void;
+  editHandler: (id: string, route: DevtoolsRoute) => void;
+  onDeleteHandler: (id: string) => void;
 }
 
 export function RoutesHandler(props: VoidProps<RoutesProps>) {
@@ -75,6 +75,16 @@ export function RoutesHandler(props: VoidProps<RoutesProps>) {
                     </For>
                   </select>
 
+                  <Show when={route.custom}>
+                    <span
+                      class={
+                        "badge badge-info text-black uppercase font-semibold"
+                      }
+                    >
+                      Custom
+                    </span>
+                  </Show>
+
                   <div class="flex gap-2 ml-auto">
                     <button
                       class="btn btn-sm btn-ghost btn-circle"
@@ -111,7 +121,7 @@ export function RoutesHandler(props: VoidProps<RoutesProps>) {
         {(editingRoute) => (
           <CreateRouteHandlerForm
             initialValue={editingRoute}
-            onSubmit={() => props.editHandler(editingRoute.id, editingRoute)}
+            onSubmit={(data) => props.editHandler(editingRoute.id, data)}
             onClose={() => setEditingRoute(null)}
           />
         )}

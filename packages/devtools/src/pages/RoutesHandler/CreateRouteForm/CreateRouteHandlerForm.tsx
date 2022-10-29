@@ -1,8 +1,12 @@
 import { createEffect, For } from "solid-js";
 import { CheckIcon } from "../../../components/CheckIcon";
 import { SparklesIcon } from "../../../components/SparklesIcon";
-import { DevtoolsRoute, routeMethods } from "@mswjs-devtools/shared";
-import { EnhancedDevtoolsRoute } from "@mswjs-devtools/shared/src";
+import {
+  DevtoolsRoute,
+  EnhancedDevtoolsRoute,
+  generateUUID,
+  routeMethods,
+} from "@mswjs-devtools/shared";
 import { createRouteForm } from "./createRouteForm";
 import { HandlerFormProvider } from "./createHandlerForm";
 import { HandlerForm } from "./HandlerForm";
@@ -102,6 +106,7 @@ export function CreateRouteHandlerForm(props: CreateRouteHandlerFormProps) {
                 type="text"
                 placeholder="Type URL"
                 class="input input-bordered input-sm w-full max-w-xs"
+                value={form.url}
                 onInput={(event) => setForm("url", event.currentTarget.value)}
               />
             </div>

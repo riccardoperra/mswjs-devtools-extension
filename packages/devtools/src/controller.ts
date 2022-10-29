@@ -11,7 +11,7 @@ export interface DevToolPanelController {
 
   setEnabled(enabled: boolean): void;
 
-  setSkipRoute(id: number, skip: boolean): void;
+  setSkipRoute(id: string, skip: boolean): void;
 
   setSkipMock(id: string, skip: boolean): void;
 
@@ -19,7 +19,7 @@ export interface DevToolPanelController {
 
   onCreateHandler(data: DevtoolsRoute): void;
 
-  onEditHandler(id: number, data: DevtoolsRoute): void;
+  onEditHandler(id: string, data: DevtoolsRoute): void;
 
-  onDeleteHandler(id: number): void;
+  onDeleteHandler(id: string): void;
 }

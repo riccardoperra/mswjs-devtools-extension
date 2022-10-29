@@ -2,6 +2,7 @@ import {
   DevtoolsHandler,
   DevtoolsRoute,
   EnhancedDevtoolsRoute,
+  generateUUID,
   routeMethods,
 } from "@mswjs-devtools/shared";
 import { createStore } from "solid-js/store";
@@ -11,6 +12,7 @@ import { batch } from "solid-js";
 
 function getInitialValue(): DevtoolsRoute {
   return {
+    id: generateUUID(),
     method: routeMethods[0],
     url: "",
     selectedHandler: 0,
@@ -62,6 +64,7 @@ export function createRouteForm() {
 
     fromEnhancedRoute(value: EnhancedDevtoolsRoute) {
       setForm({
+        id: value.id,
         selectedHandler: value.selectedHandler,
         method: value.method,
         url: value.url,

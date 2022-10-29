@@ -3,7 +3,7 @@ import "@mswjs-devtools/devtools/dist/index.css";
 import { EnhancedDevtoolsRoute } from "@mswjs-devtools/shared";
 import { createStore } from "solid-js/store";
 
-function* createIncremental() {
+function* createIncremental(): IterableIterator<number> {
   let count = 0;
   while (true) {
     yield ++count;
@@ -17,12 +17,33 @@ export function App() {
     {
       id: 0,
       skip: false,
-      info: {
-        method: "GET",
-        path: "localhost",
-        callFrame: "",
-        header: "[GET]",
-      },
+      selectedHandler: 0,
+      url: "http://jsonplaceholder.com",
+      method: "GET",
+      custom: true,
+      handlers: [
+        {
+          description: "Handler",
+          status: 200,
+          delay: 0,
+          response: "{}",
+        },
+      ],
+    },
+    {
+      id: 1,
+      skip: false,
+      selectedHandler: 0,
+      url: "http://jsonplaceholder.com",
+      method: "POST",
+      handlers: [
+        {
+          description: "Handler",
+          status: 200,
+          delay: 0,
+          response: "{}",
+        },
+      ],
     },
   ]);
 
@@ -32,12 +53,22 @@ export function App() {
         enabled: true,
         mocks: [],
         routes,
+        onEditHandler(id, data) {
+          console.log("onEditHandler", { ...data });
+          setRoutes(
+            (route) => route.id === id,
+            (route) => ({
+              ...route,
+              ...data,
+            })
+          );
+        },
         onCreateHandler(data) {
           const route: EnhancedDevtoolsRoute = {
-            id: incremental.next(),
             skip: false,
             ...data,
           };
+          console.log("onCreateHandler", route);
 
           setRoutes((routes) => [...routes, route]);
         },

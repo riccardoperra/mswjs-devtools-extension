@@ -15,12 +15,13 @@ export interface SerializedRouteHandler {
 }
 
 export interface EnhancedDevtoolsRoute extends DevtoolsRoute {
-  id: number;
   info?: RequestHandler["info"] & { method?: string; path?: string };
   skip: boolean;
+  custom?: boolean;
 }
 
 export interface DevtoolsRoute {
+  readonly id: string;
   readonly url: string;
   readonly method: string;
   readonly handlers: readonly DevtoolsHandler[];
