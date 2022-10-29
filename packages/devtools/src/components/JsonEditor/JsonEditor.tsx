@@ -32,9 +32,11 @@ export function JsonEditor(props: VoidProps<JsonEditorProps>) {
     onValueChange: props.onValueChange,
   });
 
-  createEditorControlledValue(editorView, () =>
-    typeof props.value === "string" ? props.value : JSON.stringify(props.value)
-  );
+  createEditorControlledValue(editorView, () => {
+    return typeof props.value === "string"
+      ? props.value
+      : JSON.stringify(props.value);
+  });
 
   createEditorFocus(editorView, (focused) => {
     if (!focused) {

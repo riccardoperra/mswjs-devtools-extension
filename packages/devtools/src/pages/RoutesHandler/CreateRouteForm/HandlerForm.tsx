@@ -1,4 +1,3 @@
-import { PlusIcon } from "../../../components/PlusIcon";
 import { StatusCodes } from "../status";
 import { ExclamationTriangleIcon } from "../../../components/ExclamationTriangleIcon";
 import { CheckIcon } from "../../../components/CheckIcon";
@@ -23,6 +22,7 @@ const JsonEditor = lazy(() =>
 export function HandlerForm() {
   const form = getCreateRouteHandlerForm();
   const [routeTab] = createSignal(0);
+
   return (
     <>
       <Switch>

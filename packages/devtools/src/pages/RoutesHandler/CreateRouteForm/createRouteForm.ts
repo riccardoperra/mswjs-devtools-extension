@@ -16,7 +16,7 @@ function getInitialValue(): DevtoolsRoute {
     selectedHandler: 0,
     handlers: [
       {
-        response: "",
+        response: "{}",
         status: 200,
         delay: 0,
         description: "Lorem ipsum",
@@ -62,6 +62,7 @@ export function createRouteForm() {
 
     fromEnhancedRoute(value: EnhancedDevtoolsRoute) {
       setForm({
+        selectedHandler: value.selectedHandler,
         method: value.method,
         url: value.url,
         handlers: value.handlers ?? [],

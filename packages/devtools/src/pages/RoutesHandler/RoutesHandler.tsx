@@ -1,6 +1,6 @@
 import { createSignal, For, Show, VoidProps } from "solid-js";
 import { Checkbox } from "../../components/Checkbox";
-import { DevtoolsRoute, SerializedRouteHandler } from "@mswjs-devtools/shared";
+import { DevtoolsRoute } from "@mswjs-devtools/shared";
 import { CreateRouteHandlerForm } from "./CreateRouteForm/CreateRouteHandlerForm";
 import { ScrollableWrapper } from "../../components/ScrollableWrapper/ScrollableWrapper";
 import { PencilSquareIcon } from "../../components/PencilSquareIcon";
@@ -12,13 +12,14 @@ interface RoutesProps {
   routes: EnhancedDevtoolsRoute[];
   setSkipRoute: (id: number, skip: boolean) => void;
   createHandler: (route: DevtoolsRoute) => void;
+  editHandler: (id: number, route: DevtoolsRoute) => void;
   onDeleteHandler: (id: number) => void;
 }
 
 export function RoutesHandler(props: VoidProps<RoutesProps>) {
   const [showCreateForm, setShowCreateForm] = createSignal(false);
   const [editingRoute, setEditingRoute] =
-    createSignal<SerializedRouteHandler | null>(null);
+    createSignal<EnhancedDevtoolsRoute | null>(null);
 
   return (
     <div class={"flex flex-col h-full"}>
@@ -49,6 +50,31 @@ export function RoutesHandler(props: VoidProps<RoutesProps>) {
                     label={route.url ?? ""}
                   />
 
+                  <select
+                    class={"select select-xs select-bordered"}
+                    onChange={(event) => {
+                      props.editHandler(route.id, {
+                        ...route,
+                        selectedHandler: parseInt(
+                          event.currentTarget.value,
+                          10
+                        ),
+                      });
+                    }}
+                  >
+                    <For each={route.handlers}>
+                      {(handler, index) => (
+                        <option
+                          selected={index() === route.selectedHandler}
+                          value={index()}
+                        >
+                          Response {index} ({handler.status}) -{" "}
+                          {handler.description || "No description"}
+                        </option>
+                      )}
+                    </For>
+                  </select>
+
                   <div class="flex gap-2 ml-auto">
                     <button
                       class="btn btn-sm btn-ghost btn-circle"
@@ -73,7 +99,7 @@ export function RoutesHandler(props: VoidProps<RoutesProps>) {
 
       <Show when={showCreateForm()}>
         <CreateRouteHandlerForm
-          onCreate={props.createHandler}
+          onSubmit={props.createHandler}
           onClose={() => setShowCreateForm(false)}
         />
       </Show>
@@ -85,7 +111,7 @@ export function RoutesHandler(props: VoidProps<RoutesProps>) {
         {(editingRoute) => (
           <CreateRouteHandlerForm
             initialValue={editingRoute}
-            onCreate={props.createHandler}
+            onSubmit={() => props.editHandler(editingRoute.id, editingRoute)}
             onClose={() => setEditingRoute(null)}
           />
         )}

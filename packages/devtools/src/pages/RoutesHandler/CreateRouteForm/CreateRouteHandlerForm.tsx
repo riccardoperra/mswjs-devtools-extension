@@ -1,4 +1,4 @@
-import { createEffect, For, Show } from "solid-js";
+import { createEffect, For } from "solid-js";
 import { CheckIcon } from "../../../components/CheckIcon";
 import { SparklesIcon } from "../../../components/SparklesIcon";
 import { DevtoolsRoute, routeMethods } from "@mswjs-devtools/shared";
@@ -12,7 +12,7 @@ import { TrashIcon } from "../../../components/TrashIcon";
 interface CreateRouteHandlerFormProps {
   initialValue?: EnhancedDevtoolsRoute;
   onClose: () => void;
-  onCreate: (route: DevtoolsRoute) => void;
+  onSubmit: (route: DevtoolsRoute) => void;
 }
 
 export function CreateRouteHandlerForm(props: CreateRouteHandlerFormProps) {
@@ -36,25 +36,14 @@ export function CreateRouteHandlerForm(props: CreateRouteHandlerFormProps) {
 
   function onSubmit(): void {
     try {
-      const handler = form.handlers[0];
-      const response = JSON.parse(handler.response);
-      props.onCreate({
-        url: form.url,
-        method: form.method,
-        handlers: [
-          {
-            response,
-            delay: handler.delay,
-            status: handler.status,
-            description: handler.description,
-          },
-        ],
-      });
+      props.onSubmit(form);
       props.onClose();
     } catch (e) {
       console.error(e);
     }
   }
+
+  const title = () => (props.initialValue ? "Edit route" : "Create route");
 
   return (
     <div
@@ -63,7 +52,7 @@ export function CreateRouteHandlerForm(props: CreateRouteHandlerFormProps) {
       }
     >
       <div class="px-4 py-2 flex items-center justify-between shadow-lg border-t border-base-300">
-        <h1 class="text-lg font-bold">Create route</h1>
+        <h1 class="text-lg font-bold">{title()}</h1>
         <button
           class="btn btn-circle btn-sm btn-ghost"
           onClick={props.onClose}
@@ -152,10 +141,21 @@ export function CreateRouteHandlerForm(props: CreateRouteHandlerFormProps) {
           <PlusIcon />
         </button>
         <div class="form-control w-full">
-          <select class="select select-sm select-bordered">
+          <select
+            class="select select-sm select-bordered"
+            onChange={(event) =>
+              setForm(
+                "selectedHandler",
+                parseInt(event.currentTarget.value, 10)
+              )
+            }
+          >
             <For each={form.handlers}>
               {(handler, index) => (
-                <option selected={index() === selectedHandlerIndex()}>
+                <option
+                  selected={index() === selectedHandlerIndex()}
+                  value={index()}
+                >
                   Response {index} ({handler.status}) -{" "}
                   {handler.description || "No description"}
                 </option>

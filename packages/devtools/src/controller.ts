@@ -19,5 +19,7 @@ export interface DevToolPanelController {
 
   onCreateHandler(data: DevtoolsRoute): void;
 
+  onEditHandler(id: number, data: DevtoolsRoute): void;
+
   onDeleteHandler(id: number): void;
 }

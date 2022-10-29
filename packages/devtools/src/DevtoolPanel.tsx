@@ -72,6 +72,7 @@ export function DevtoolPanel(props: VoidProps<DevtoolPanel>) {
               <RoutesHandler
                 routes={props.controller.routes}
                 createHandler={props.controller.onCreateHandler}
+                editHandler={props.controller.onEditHandler}
                 setSkipRoute={props.controller.setSkipRoute}
                 onDeleteHandler={props.controller.onDeleteHandler}
               />

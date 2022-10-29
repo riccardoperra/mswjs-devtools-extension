@@ -1,14 +1,12 @@
 import {
-  createComponent,
   createContext,
+  createMemo,
   JSXElement,
   ParentProps,
   useContext,
 } from "solid-js";
 import { CreateRouteForm } from "./createRouteForm";
 import { createDerivedSetter } from "../../../createDerivedSetter";
-import { format } from "prettier";
-import parserBabel from "prettier/parser-babel";
 
 const Context = createContext<ReturnType<typeof $createHandlerForm>>();
 
@@ -17,12 +15,14 @@ interface HandlerFormProviderProps {
 }
 
 function $createHandlerForm(form: CreateRouteForm) {
+  const handler = createMemo(() => form.selectedHandler());
+
   return {
     formatJson() {
       return form.formatJson(form.selectedHandler());
     },
     get handler() {
-      return form.selectedHandler();
+      return handler();
     },
     get isValid() {
       const response = form.selectedHandler().response;
