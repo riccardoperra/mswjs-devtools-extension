@@ -18,6 +18,11 @@
   "dependencies": {
     "@mswjs-devtools/devtools": "workspace:*",
     "@mswjs-devtools/shared": "workspace:*",
-    "@vanilla-extract/vite-plugin": "^3.6.1"
+    "@mswjs/data": "^0.10.2",
+    "@vanilla-extract/vite-plugin": "^3.6.1",
+    "msw": "^0.47.4"
+  },
+  "msw": {
+    "workerDirectory": "public"
   }
 }

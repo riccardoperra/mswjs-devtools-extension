@@ -12,7 +12,15 @@ function buildSerializedRouteHandlers(
   return handlers.map((handler) => {
     return {
       id: generateUUID(),
-      handlers: [],
+      handlers: [
+        {
+          response: "",
+          delay: 0,
+          status: 200,
+          description: "MSW handler",
+          origin: "msw",
+        },
+      ],
       url: (handler.info as any)["path"],
       method: (handler.info as any)["method"],
       skip: handler.shouldSkip,

@@ -2,6 +2,7 @@ import {
   createCodeMirror,
   createEditorControlledValue,
   createEditorFocus,
+  createEditorReadonly,
 } from "solid-codemirror";
 import {
   highlightActiveLine,
@@ -25,6 +26,7 @@ interface JsonEditorProps {
   value: string;
   onValueChange: (value: string) => void;
   onSave: () => void;
+  disabled?: boolean;
 }
 
 export function JsonEditor(props: VoidProps<JsonEditorProps>) {
@@ -37,6 +39,8 @@ export function JsonEditor(props: VoidProps<JsonEditorProps>) {
       ? props.value
       : JSON.stringify(props.value);
   });
+
+  createEditorReadonly(editorView, () => props.disabled ?? false);
 
   createEditorFocus(editorView, (focused) => {
     if (!focused) {

@@ -34,8 +34,9 @@ export function createRouteForm() {
   const selectedHandlerIndex = () => form.selectedHandler ?? 0;
   const selectedHandler = () => form.handlers[selectedHandlerIndex()];
 
-  const isHandlerValid = (index: DevtoolsHandler) => {
-    const response = form.handlers[0].response;
+  const isHandlerValid = (handler: DevtoolsHandler) => {
+    if (handler.origin === "msw") return true;
+    const response = handler.response;
     if (!response) {
       return false;
     }
@@ -98,6 +99,7 @@ export function createRouteForm() {
         status: 200,
         delay: 0,
         description: "",
+        origin: "custom",
       });
 
       setForm("selectedHandler", form.handlers.length - 1);

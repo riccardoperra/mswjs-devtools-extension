@@ -4,7 +4,6 @@ import { SparklesIcon } from "../../../components/SparklesIcon";
 import {
   DevtoolsRoute,
   EnhancedDevtoolsRoute,
-  generateUUID,
   routeMethods,
 } from "@mswjs-devtools/shared";
 import { createRouteForm } from "./createRouteForm";
@@ -24,6 +23,7 @@ export function CreateRouteHandlerForm(props: CreateRouteHandlerFormProps) {
   const {
     form,
     setForm,
+    selectedHandler,
     fromEnhancedRoute,
     isValid,
     formatJson,
@@ -139,9 +139,7 @@ export function CreateRouteHandlerForm(props: CreateRouteHandlerFormProps) {
       >
         <button
           class={"btn btn-primary btn-square btn-sm gap-2"}
-          onClick={() => {
-            return addNewHandler();
-          }}
+          onClick={addNewHandler}
         >
           <PlusIcon />
         </button>
@@ -171,7 +169,9 @@ export function CreateRouteHandlerForm(props: CreateRouteHandlerFormProps) {
         <button
           class={"btn btn-error btn-square btn-sm gap-2"}
           onClick={() => deleteHandler(form.handlers.length - 1)}
-          disabled={form.handlers.length === 1}
+          disabled={
+            form.handlers.length === 1 || form.handlers[0].origin === "msw"
+          }
         >
           <TrashIcon />
         </button>

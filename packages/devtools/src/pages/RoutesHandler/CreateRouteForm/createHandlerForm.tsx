@@ -18,6 +18,9 @@ function $createHandlerForm(form: CreateRouteForm) {
   const handler = createMemo(() => form.selectedHandler());
 
   return {
+    addNewHandler() {
+      return form.addNewHandler();
+    },
     formatJson() {
       return form.formatJson(form.selectedHandler());
     },

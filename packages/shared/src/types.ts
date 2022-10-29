@@ -33,4 +33,5 @@ export interface DevtoolsHandler {
   status: number;
   delay: number | null;
   description: string;
+  readonly origin?: "msw" | "custom" | string;
 }
