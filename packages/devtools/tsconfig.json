@@ -8,7 +8,6 @@
     "jsx": "preserve",
     "resolveJsonModule": true,
     "jsxImportSource": "solid-js",
-    "preserveSymlinks": true,
     "types": ["@types/node"]
   },
   "include": ["./**/*", "../../env.d.ts", "env.d.ts"]

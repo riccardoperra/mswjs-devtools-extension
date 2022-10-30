@@ -4,6 +4,9 @@ import { DevToolPanelController } from "./controller";
 import { MockConfigHandler } from "./pages/MockConfigHandler/MockConfigHandler";
 import { RoutesHandler } from "./pages/RoutesHandler/RoutesHandler";
 import * as styles from "./DevtoolPanel.css";
+import "./ui/global.css";
+import { Box } from "./components/Box/Box";
+import { Button } from "./components/Button/Button";
 
 interface DevtoolPanel {
   controller: DevToolPanelController;
@@ -18,8 +21,12 @@ export function DevtoolPanel(props: VoidProps<DevtoolPanel>) {
 
   return (
     <div class={styles.wrapper}>
-      <div class={`bg-base-300 px-4 ${styles.header}`}>
-        <div class="flex items-center w-full">
+      <div class={styles.header}>
+        <Box
+          display={"flex"}
+          alignItems={"center"}
+          width={"full"}
+        >
           <div class="form-control">
             <label class="label cursor-pointer">
               <input
@@ -35,16 +42,16 @@ export function DevtoolPanel(props: VoidProps<DevtoolPanel>) {
               </span>
             </label>
           </div>
-          <div class="ml-auto">
-            <button
-              class={"btn btn-sm btn-ghost gap-2"}
+          <Box marginLeft={"auto"}>
+            <Button
+              size={"sm"}
+              icon={<ReloadIcon />}
               onClick={props.controller.forceReload}
             >
-              <ReloadIcon />
               Reload
-            </button>
-          </div>
-        </div>
+            </Button>
+          </Box>
+        </Box>
       </div>
 
       <div class={`tabs tabs-boxed px-4 ${styles.tabs}`}>

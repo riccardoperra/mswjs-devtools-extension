@@ -10,6 +10,7 @@
     "noEmit": true,
     "skipLibCheck": true,
     "noUnusedLocals": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "preserveSymlinks": true
   }
 }

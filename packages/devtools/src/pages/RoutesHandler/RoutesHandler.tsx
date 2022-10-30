@@ -7,6 +7,7 @@ import { PencilSquareIcon } from "../../components/PencilSquareIcon";
 import { TrashIcon } from "../../components/TrashIcon";
 import { RouteInfoLabel } from "./RouteInfoLabel/RouteInfoLabel";
 import { EnhancedDevtoolsRoute } from "@mswjs-devtools/shared/src";
+import { Button } from "../../components/Button/Button";
 
 interface RoutesProps {
   routes: EnhancedDevtoolsRoute[];
@@ -25,12 +26,13 @@ export function RoutesHandler(props: VoidProps<RoutesProps>) {
     <div class={"flex flex-col h-full"}>
       <div class="px-4 my-3 flex items-center justify-between">
         <h1 class="text-lg font-bold">Available routes</h1>
-        <button
-          class="btn btn-primary btn-sm"
+        <Button
+          size={"sm"}
+          variant={"primary"}
           onClick={() => setShowCreateForm(true)}
         >
           Add new
-        </button>
+        </Button>
       </div>
       <ScrollableWrapper>
         <For each={props.routes}>

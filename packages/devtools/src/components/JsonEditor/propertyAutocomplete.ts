@@ -2,13 +2,14 @@ import { CompletionContext, CompletionResult } from "@codemirror/autocomplete";
 import { syntaxTree } from "@codemirror/language";
 import { Extension } from "@codemirror/state";
 import { jsonLanguage } from "@codemirror/lang-json";
-import { faker } from "@faker-js/faker";
 
-export function jsonAutocomplete(): Extension {
-  return jsonLanguage.data.of({
-    autocomplete: createJsonPropertyAutocomplete({
-      faker: faker,
-    }),
+export function jsonAutocomplete(): Promise<Extension> {
+  return import("@faker-js/faker").then((faker) => {
+    return jsonLanguage.data.of({
+      autocomplete: createJsonPropertyAutocomplete({
+        faker: faker,
+      }),
+    });
   });
 }
 
@@ -28,8 +29,6 @@ function createJsonPropertyAutocomplete(
     const word = context.matchBefore(/\w*/);
     // Match the complete string inside the "" characters
     const source = context.matchBefore(/[A-Za-z0-9_.]*/);
-
-    console.log(source);
 
     if (!word || !source) {
       return null;

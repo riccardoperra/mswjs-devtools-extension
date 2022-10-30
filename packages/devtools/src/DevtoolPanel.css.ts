@@ -1,4 +1,5 @@
 import { style } from "@vanilla-extract/css";
+import { themeVars } from "./ui/global.css";
 
 export const wrapper = style({
   height: "100%",
@@ -13,6 +14,9 @@ export const header = style({
   borderBottom: "1px solid hsl(0deg 0% 100% / 10%)",
   height: "46px",
   flexShrink: 1,
+  paddingLeft: themeVars.global.spacing["4"],
+  paddingRight: themeVars.global.spacing["4"],
+  backgroundColor: themeVars.global.colors.base3,
 });
 
 export const tabs = style({

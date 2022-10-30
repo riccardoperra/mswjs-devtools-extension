@@ -33,11 +33,13 @@ importers:
       '@rollup/plugin-alias': ^4.0.2
       '@rollup/plugin-json': ^5.0.1
       '@rollup/plugin-typescript': ^9.0.2
+      '@solid-primitives/props': ^3.0.1
       '@tailwindcss/typography': ^0.5.7
       '@types/node': ^18.11.3
       '@types/prettier': ^2.7.1
       '@vanilla-extract/css': ^1.9.1
       '@vanilla-extract/esbuild-plugin': ^2.2.0
+      '@vanilla-extract/private': ^1.0.3
       '@vanilla-extract/recipes': ^0.2.5
       '@vanilla-extract/rollup-plugin': ^1.2.0
       '@vanilla-extract/sprinkles': ^1.5.0
@@ -74,6 +76,7 @@ importers:
       '@faker-js/faker': 7.6.0
       '@lezer/highlight': 1.1.2
       '@mswjs-devtools/shared': link:../shared
+      '@solid-primitives/props': 3.0.1_solid-js@1.6.0
       '@types/prettier': 2.7.1
       '@vanilla-extract/css': 1.9.1
       '@vanilla-extract/recipes': 0.2.5_@vanilla-extract+css@1.9.1
@@ -90,6 +93,7 @@ importers:
       '@tailwindcss/typography': 0.5.7_tailwindcss@3.2.1
       '@types/node': 18.11.3
       '@vanilla-extract/esbuild-plugin': 2.2.0
+      '@vanilla-extract/private': 1.0.3
       '@vanilla-extract/rollup-plugin': 1.2.0_rollup@3.2.3
       '@vanilla-extract/vite-plugin': 3.6.1_vite@3.1.8
       autoprefixer: 10.4.12_postcss@8.4.18
@@ -2040,6 +2044,15 @@ packages:
       solid-js: 1.6.0
     dev: false
 
+  /@solid-primitives/props/3.0.1_solid-js@1.6.0:
+    resolution: {integrity: sha512-5v27ex4KxxnIbgze1lXPEXHO/ebbtEjL6idkhezH/7jHpjunl8PYabpDgoGO16tb8DawcZWOAXa7waWqWPAe/A==}
+    peerDependencies:
+      solid-js: ^1.6.0
+    dependencies:
+      '@solid-primitives/utils': 4.0.0_solid-js@1.6.0
+      solid-js: 1.6.0
+    dev: false
+
   /@solid-primitives/rootless/1.2.0_solid-js@1.6.0:
     resolution: {integrity: sha512-Kf/7/YqmToN40qb6oUgZnHjNBhK/eNVAUGCBnTIZ0XmbML9UpR+9ZmI1S3Eg1OmVZVfEyG3E/jFMnfxVdtQlPg==}
     peerDependencies:
@@ -2070,6 +2083,14 @@ packages:
     resolution: {integrity: sha512-/rerChcwgFtHEgVCCBY7BXGHh7a83HcIAzR8QhXJ789geIVbBs2YxHF4UUZlG7ec00NKSfvO3+sQquN/xKQLMw==}
     peerDependencies:
       solid-js: ^1.5.0
+    dependencies:
+      solid-js: 1.6.0
+    dev: false
+
+  /@solid-primitives/utils/4.0.0_solid-js@1.6.0:
+    resolution: {integrity: sha512-fGsJy8Z8YiwogpiezD7TWjI62UCb0JAHJWdoXWGrggrn4bfToZotKkabiB0IVFMkWVE1ZcrkvZT3bkmqGnK0ng==}
+    peerDependencies:
+      solid-js: ^1.6.0
     dependencies:
       solid-js: 1.6.0
     dev: false
