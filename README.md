@@ -15,6 +15,21 @@
 
 ## 🚧 This project is currently in early development 🚧
 
+## Features
+
+✅ **Integrate existing handlers from your application code**. Configure the extension and get the list of your
+mocked request and responses directly from the UI.
+
+![img_6.png](img_6.png)
+
+✅ **Create and edit existing handlers on the fly**. 
+
+![img_7.png](img_7.png)
+
+✅ **JSON Editor and @faker-js/faker-js integration**.
+
+![img_5.png](img_5.png)
+
 ## Usage
 
 ```ts
