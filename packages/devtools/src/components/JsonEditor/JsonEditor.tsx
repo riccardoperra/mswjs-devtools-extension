@@ -3,6 +3,7 @@ import {
   createEditorControlledValue,
   createEditorFocus,
   createEditorReadonly,
+  createLazyCompartmentExtension,
 } from "solid-codemirror";
 import {
   highlightActiveLine,
@@ -13,12 +14,10 @@ import {
 } from "@codemirror/view";
 import { VoidProps } from "solid-js";
 import { theme } from "./theme";
-import { json, jsonParseLinter } from "@codemirror/lang-json";
 import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
 import { bracketMatching, indentOnInput } from "@codemirror/language";
 import { autocompletion, closeBracketsKeymap } from "@codemirror/autocomplete";
 import { linter } from "@codemirror/lint";
-import { jsonAutocomplete } from "./propertyAutocomplete";
 
 interface JsonEditorProps {
   value: string;
@@ -62,9 +61,6 @@ export function JsonEditor(props: VoidProps<JsonEditorProps>) {
     indentOnInput(),
     history(),
     bracketMatching(),
-    linter(jsonParseLinter()),
-    json(),
-    jsonAutocomplete(),
     autocompletion({
       defaultKeymap: true,
       icons: true,
@@ -79,16 +75,28 @@ export function JsonEditor(props: VoidProps<JsonEditorProps>) {
     ]),
   ]);
 
+  createLazyCompartmentExtension(() => {
+    return Promise.all([
+      import("@codemirror/lang-json").then(({ json, jsonParseLinter }) => [
+        json(),
+        linter(jsonParseLinter()),
+      ]),
+      import("./propertyAutocomplete").then((res) => res.jsonAutocomplete()),
+    ]);
+  }, editorView);
+
   createExtension(theme);
 
   return (
-    <div
-      style={{
-        "background-color": "#181818",
-        width: "100%",
-      }}
-      class={"w-full h-full overflow-auto"}
-      ref={ref}
-    />
+    <>
+      <div
+        style={{
+          "background-color": "#181818",
+          width: "100%",
+        }}
+        class={"w-full h-full overflow-auto"}
+        ref={ref}
+      />
+    </>
   );
 }

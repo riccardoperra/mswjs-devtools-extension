@@ -50,7 +50,7 @@
     "daisyui": "^2.33.0",
     "msw": "^0.47.4",
     "prettier": "^2.7.1",
-    "solid-codemirror": "^2.1.2",
+    "solid-codemirror": "^2.2.1",
     "solid-js": "^1.6.0"
   },
   "devDependencies": {

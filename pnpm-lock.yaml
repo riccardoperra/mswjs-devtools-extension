@@ -54,7 +54,7 @@ importers:
       rollup: ^3.2.3
       rollup-plugin-typescript-paths: ^1.4.0
       rollup-preset-solid: ^1.4.0
-      solid-codemirror: ^2.1.2
+      solid-codemirror: ^2.2.1
       solid-js: ^1.6.0
       tailwindcss: ^3.2.1
       tsup: ^6.3.0
@@ -81,7 +81,7 @@ importers:
       daisyui: 2.33.0_xkowlklhtk6sfvtndbucb3hfiy
       msw: 0.47.4_typescript@4.8.4
       prettier: 2.7.1
-      solid-codemirror: 2.1.2
+      solid-codemirror: 2.2.1
       solid-js: 1.6.0
     devDependencies:
       '@rollup/plugin-alias': 4.0.2_rollup@3.2.3
@@ -5114,8 +5114,8 @@ packages:
       wcwidth: 1.0.1
       yargs: 15.4.1
 
-  /solid-codemirror/2.1.2:
-    resolution: {integrity: sha512-fhGxNlddLJYlUANevSZdelvKMtajKSSQaiOzz/nP0kSa+tyqI69WTReds7I/22yfUAOW/gdGvFVoHFx2HPKKHw==}
+  /solid-codemirror/2.2.1:
+    resolution: {integrity: sha512-uZhr+uwdyjJEKa/jLlGOLrw+36BOFRrE4CtsTWpazky2sy1VMiuFYMlrMYzITqGdrLJfYnb79eTDHpoUDRXxSg==}
     engines: {node: '>=14'}
     dependencies:
       '@changesets/cli': 2.25.0
