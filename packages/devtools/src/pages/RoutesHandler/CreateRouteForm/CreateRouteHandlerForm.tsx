@@ -23,7 +23,6 @@ export function CreateRouteHandlerForm(props: CreateRouteHandlerFormProps) {
   const {
     form,
     setForm,
-    selectedHandler,
     fromEnhancedRoute,
     isValid,
     formatJson,

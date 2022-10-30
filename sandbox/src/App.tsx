@@ -1,10 +1,14 @@
 import { DevtoolPanel } from "@mswjs-devtools/devtools";
 import "@mswjs-devtools/devtools/dist/index.css";
-import { EnhancedDevtoolsRoute, generateUUID } from "@mswjs-devtools/shared";
+import {
+  createHandler,
+  EnhancedDevtoolsRoute,
+  generateUUID,
+} from "@mswjs-devtools/shared";
 import { RequestHandler } from "msw";
 import { createStore } from "solid-js/store";
 import { worker } from "./mocks/browser";
-import { api } from "./mocks/handlers";
+import { createEffect } from "solid-js";
 
 function buildSerializedRouteHandlers(
   handlers: readonly RequestHandler[]
@@ -32,13 +36,23 @@ function buildSerializedRouteHandlers(
 worker.start();
 
 export function App() {
-  const [routes, setRoutes] = createStore<EnhancedDevtoolsRoute[]>(
-    buildSerializedRouteHandlers(worker.listHandlers())
-  );
+  // const [routes, setRoutes] = createStore<EnhancedDevtoolsRoute[]>(
+  //   buildSerializedRouteHandlers(worker.listHandlers())
+  // );
+  const [routes, setRoutes] = createStore<EnhancedDevtoolsRoute[]>([]);
 
-  setInterval(() => {
-    fetch(api.fetchAllTodos).then((res) => res.json());
-  }, 2000);
+  // setInterval(() => {
+  //   fetch(api.fetchAllTodos).then((res) => res.json());
+  // }, 2000);
+
+  createEffect(() => {
+    JSON.parse(JSON.stringify(routes));
+    worker.resetHandlers(
+      ...routes
+        .map((route) => createHandler(route))
+        .filter((route): route is NonNullable<typeof route> => !!route)
+    );
+  });
 
   return (
     <DevtoolPanel

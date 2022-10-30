@@ -16,11 +16,9 @@ import { theme } from "./theme";
 import { json, jsonParseLinter } from "@codemirror/lang-json";
 import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
 import { bracketMatching, indentOnInput } from "@codemirror/language";
-import {
-  closeBracketsKeymap,
-  completionKeymap,
-} from "@codemirror/autocomplete";
+import { autocompletion, closeBracketsKeymap } from "@codemirror/autocomplete";
 import { linter } from "@codemirror/lint";
+import { jsonAutocomplete } from "./propertyAutocomplete";
 
 interface JsonEditorProps {
   value: string;
@@ -65,14 +63,20 @@ export function JsonEditor(props: VoidProps<JsonEditorProps>) {
     history(),
     bracketMatching(),
     linter(jsonParseLinter()),
+    json(),
+    jsonAutocomplete(),
+    autocompletion({
+      defaultKeymap: true,
+      icons: true,
+      aboveCursor: true,
+      activateOnTyping: true,
+    }),
     keymap.of([
       ...closeBracketsKeymap,
       ...defaultKeymap,
-      ...completionKeymap,
       ...historyKeymap,
       saveKeymap,
     ]),
-    json(),
   ]);
 
   createExtension(theme);
