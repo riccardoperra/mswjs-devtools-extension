@@ -17,24 +17,32 @@
 
 ## Features
 
-✅ **Integrate existing handlers from your application code**. Configure the extension and get the list of your
-mocked request and responses directly from the UI.
+✅ **Integrate existing handlers from your application code**.
+
+Once the extension is configured, you will be able to retrieve automatically the list of your configured handlers
+in order to activate/deactivate them, editing the responses at runtime and more.
 
 ![img_6.png](img_6.png)
 
-✅ **Create and edit existing handlers on the fly**. 
+✅ **Create and edit existing handlers on the fly**.
 
-![img_7.png](img_7.png)
+You can edit your handler response at runtime, with the possibility to add more custom responses to choose the one that
+suits better your scenario.
+
+![img_8.png](img_8.png)
 
 ✅ **JSON Editor and @faker-js/faker-js integration**.
+
+You can add a custom response body in JSON taking advantage of different custom
+features like `Prettier` auto-formatting, autocompleting for `@faker-js/faker-js` variables.
 
 ![img_5.png](img_5.png)
 
 ## Usage
 
 ```ts
-import { setupWorker, SetupWorkerApi } from "msw";
-import { handlers } from "./handlers";
+import {setupWorker, SetupWorkerApi} from "msw";
+import {handlers} from "./handlers";
 
 export const worker = setupWorker(...handlers);
 
@@ -56,51 +64,9 @@ if (window.__MSWJS_DEVTOOLS_EXTENSION) {
 - [ ] Add handler CRUD
 - [ ] Add scenarios
 - [ ] Add Import/Export configuration
-- [ ] Add configuration persistence 
+- [ ] Add configuration persistence
 - [ ] Add request conditions from UI
-- [ ] Import interfaces from open-api 
-- [ ] Handle mock environments 
+- [ ] Import interfaces from open-api
+- [ ] Handle mock environments
 - [ ] Add docs
 - [ ] Remove tailwind
-
-### List all handlers
-
-![img_2.png](img_2.png)
-
-### Creating new handlers
-
-![img_3.png](img_3.png)
-
-Those templates dependencies are maintained via [pnpm](https://pnpm.io) via `pnpm up -Lri`.
-
-This is the reason you see a `pnpm-lock.yaml`. That being said, any package manager will work. This file can be safely
-be removed once you clone a template.
-
-```bash
-$ npm install # or pnpm install or yarn install
-```
-
-### Learn more on the [Solid Website](https://solidjs.com) and come chat with us on our [Discord](https://discord.com/invite/solidjs)
-
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm dev` or `npm start`
-
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.<br>
-
-### `npm run build`
-
-Builds the app for production to the `dist` folder.<br>
-It correctly bundles Solid in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-## Deployment
-
-You can deploy the `dist` folder to any static host provider (netlify, surge, now, etc.)

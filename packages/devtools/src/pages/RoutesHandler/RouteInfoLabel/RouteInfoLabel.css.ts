@@ -5,8 +5,11 @@ export const divider = style({
   marginRight: "8px",
   fontWeight: 600,
   userSelect: "none",
+  color: "#666",
 });
 
 export const label = style({
-  fontWeight: 600,
+  fontWeight: 500,
+  fontSize: "14px",
+  fontFamily: "Jetbrains Mono",
 });
