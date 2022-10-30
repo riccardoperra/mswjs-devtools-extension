@@ -117,12 +117,43 @@ export const colors = EditorView.theme(
       color: parseColor(tokens.colors["tooltip.text"]),
       borderRadius: "6px",
       overflow: "hidden",
-      boxShadow: "0px 4px 16px 1px rgba(0,0,0,.25)",
+      boxShadow:
+        "rgba(0, 0, 0, 0.4) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px",
     },
     ".cm-tooltip .cm-tooltip-lint.cm-tooltip-section .cm-diagnostic.cm-diagnostic-error":
       {
         border: "none",
       },
+    ".cm-tooltip-autocomplete": {
+      "& > ul > li": {
+        fontFamily: "JetBrains Mono, Inter, monospace",
+        fontSize: "14px",
+        padding: "4px !important",
+        paddingRight: "8px !important",
+        paddingLeft: "8px !important",
+      },
+      "& > ul > li[aria-selected]": {
+        backgroundColor: parseColor(tokens.colors["input.selection.fill"]),
+      },
+      "& > ul > li > div.cm-completionIcon": {
+        marginRight: "4px !important",
+        fontSize: "14px",
+      },
+    },
+    "::-webkit-scrollbar": {
+      width: "12px",
+      backgroundColor: "transparent",
+    },
+    "::-webkit-scrollbar-track": {
+      backgroundColor: "transparent",
+    },
+    "::-webkit-scrollbar-thumb": {
+      backgroundColor: "#505050",
+      borderRadius: "1000px",
+      border: "4px solid transparent",
+      backgroundClip: "content-box",
+      transition: "background-color .2s",
+    },
   },
   {
     dark: true,

@@ -36,10 +36,10 @@ function buildSerializedRouteHandlers(
 worker.start();
 
 export function App() {
-  // const [routes, setRoutes] = createStore<EnhancedDevtoolsRoute[]>(
-  //   buildSerializedRouteHandlers(worker.listHandlers())
-  // );
-  const [routes, setRoutes] = createStore<EnhancedDevtoolsRoute[]>([]);
+  const [routes, setRoutes] = createStore<EnhancedDevtoolsRoute[]>(
+    buildSerializedRouteHandlers(worker.listHandlers())
+  );
+  // const [routes, setRoutes] = createStore<EnhancedDevtoolsRoute[]>([]);
 
   // setInterval(() => {
   //   fetch(api.fetchAllTodos).then((res) => res.json());
