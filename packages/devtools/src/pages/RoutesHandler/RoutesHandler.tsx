@@ -41,11 +41,11 @@ export function RoutesHandler(props: VoidProps<RoutesProps>) {
               () => route.handlers,
               (handler, index) =>
                 ({
-                  ...handler,
+                  // TODO: fix select not working with value different
                   label: `Response ${index()} (${handler.status}) - ${
                     handler.description || "No description"
                   }`,
-                  value: index(),
+                  value: handler.id,
                 }) as const,
             );
 
@@ -74,7 +74,7 @@ export function RoutesHandler(props: VoidProps<RoutesProps>) {
                     size={"xs"}
                     {...handlersSelectOptions.props()}
                     {...handlersSelectOptions.controlled(
-                      () => route.selectedHandler ?? 0,
+                      () => route.selectedHandler ?? route.handlers[0].id,
                       (value) =>
                         props.editHandler(route.id, {
                           ...route,

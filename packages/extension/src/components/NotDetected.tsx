@@ -1,8 +1,6 @@
-import { ExclamationCircleIcon } from "./ExclamationCircleIcon";
-
 export function NotDetected() {
   return (
-    <div class="h-[100svh] w-full justify-center bg-base-100">
+    <div class="h-[100svh] w-full justify-center bg-neutral-900">
       <div class="alert radius-0">
         <div>
           <svg

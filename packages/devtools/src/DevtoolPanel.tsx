@@ -24,7 +24,7 @@ export function DevtoolPanel(props: VoidProps<DevtoolPanel>) {
   document.body.setAttribute("data-cui-theme", "dark");
 
   return (
-    <div class={styles.wrapper}>
+    <div class={`${styles.wrapper} bg-neutral-950`}>
       <div class={styles.header}>
         <Box
           display={"flex"}

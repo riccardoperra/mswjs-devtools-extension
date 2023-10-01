@@ -128,7 +128,7 @@ export function HandlerForm() {
                     fallback={
                       <div
                         class={
-                          "bg-base-100 flex flex-col items-center justify-center w-full h-full gap-4"
+                          "bg-neutral-900 flex flex-col items-center justify-center w-full h-full gap-4"
                         }
                       >
                         <LockIcon class={"w-16 h-16 "} />
