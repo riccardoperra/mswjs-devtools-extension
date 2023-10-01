@@ -1,4 +1,4 @@
-import { createEffect, createMemo, For, mapArray } from "solid-js";
+import { createEffect, For, mapArray } from "solid-js";
 import { CheckIcon } from "../../../components/CheckIcon";
 import { SparklesIcon } from "../../../components/SparklesIcon";
 import {
@@ -18,6 +18,8 @@ import {
   Select,
   TextField,
 } from "@codeui/kit";
+import { HandlersList } from "./HandlersList/HandlersList";
+import { CloseIcon } from "@codeui/kit/dist/types/icons";
 
 interface CreateRouteHandlerFormProps {
   initialValue?: EnhancedDevtoolsRoute;
@@ -35,7 +37,7 @@ export function CreateRouteHandlerForm(props: CreateRouteHandlerFormProps) {
     formatJson,
     addNewHandler,
     deleteHandler,
-    selectedHandlerIndex,
+    selectHandler,
   } = routeForm;
 
   const methodSelectOptions = createSelectOptions(
@@ -46,22 +48,6 @@ export function CreateRouteHandlerForm(props: CreateRouteHandlerFormProps) {
       })),
     { key: "label", valueKey: "value" },
   );
-
-  const formHandlers = mapArray(
-    () => form.handlers,
-    (handler, index) => ({
-      ...handler,
-      label: `Response ${index()} (${handler.status}) - ${
-        handler.description || "No description"
-      }`,
-      value: index(),
-    }),
-  );
-
-  const handlersSelectOptions = createSelectOptions(formHandlers, {
-    valueKey: "value",
-    key: "label",
-  });
 
   createEffect(() => {
     if (props.initialValue) {
@@ -88,10 +74,14 @@ export function CreateRouteHandlerForm(props: CreateRouteHandlerFormProps) {
     >
       <div class="px-4 py-2 flex items-center justify-between shadow-lg border-t border-base-300">
         <h1 class="text-lg font-bold">{title()}</h1>
-        <button
-          class="btn btn-circle btn-sm btn-ghost"
+        <IconButton
+          size={"sm"}
+          variant={"ghost"}
+          theme={"secondary"}
+          aria-label={"Close"}
           onClick={props.onClose}
         >
+          {/*// TODO export close icon*/}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-4 w-4"
@@ -106,118 +96,80 @@ export function CreateRouteHandlerForm(props: CreateRouteHandlerFormProps) {
               d="M6 18L18 6M6 6l12 12"
             />
           </svg>
-        </button>
-      </div>
-      <div class={"mt-2 px-4"}>
-        <div class={"flex gap-2"}>
-          <div class={"w-[100px]"}>
-            <Select
-              size={"sm"}
-              {...methodSelectOptions.props()}
-              {...methodSelectOptions.controlled(
-                () => form.method,
-                (value) => setForm("method", value),
-              )}
-              options={methodSelectOptions.options()}
-              theme={"filled"}
-              multiple={false}
-              aria-label={"Method"}
-            />
-          </div>
-          <div class={"flex-1"}>
-            <TextField
-              size={"sm"}
-              placeholder={"Type URL"}
-              value={form.url}
-              onChange={(value) => setForm("url", value)}
-            />
-          </div>
-
-          <div class={"ml-auto flex gap-2"}>
-            <Button
-              size={"sm"}
-              theme={"secondary"}
-              leftIcon={<SparklesIcon />}
-              onClick={() => formatJson()}
-            >
-              Format
-            </Button>
-            <Button
-              theme={"primary"}
-              size={"sm"}
-              disabled={!isValid()}
-              onClick={onSubmit}
-              leftIcon={<CheckIcon />}
-            >
-              Submit
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      <div
-        class={
-          "mt-2 px-4 py-2 border-y border-opacity-20 border-base-content flex items-center gap-2"
-        }
-      >
-        <IconButton
-          theme={"tertiary"}
-          aria-label={"Add new handler"}
-          onClick={addNewHandler}
-        >
-          <PlusIcon />
         </IconButton>
-        <div class="form-control w-full">
-          <Select
-            aria-label={"Handlers"}
-            theme={"filled"}
-            multiple={false}
-            {...handlersSelectOptions.props()}
-            {...handlersSelectOptions.controlled(
-              selectedHandlerIndex,
-              (value) => {
-                console.log(value);
-                setForm("selectedHandler", value);
-              },
-            )}
-            options={handlersSelectOptions.options()}
-          />
-          {/*<select*/}
-          {/*  class="select select-sm select-bordered"*/}
-          {/*  onChange={(event) =>*/}
-          {/*    setForm(*/}
-          {/*      "selectedHandler",*/}
-          {/*      parseInt(event.currentTarget.value, 10),*/}
-          {/*    )*/}
-          {/*  }*/}
-          {/*>*/}
-          {/*  <For each={form.handlers}>*/}
-          {/*    {(handler, index) => (*/}
-          {/*      <option*/}
-          {/*        selected={index() === selectedHandlerIndex()}*/}
-          {/*        value={index()}*/}
-          {/*      >*/}
-          {/*        Response {index} ({handler.status}) -{" "}*/}
-          {/*        {handler.description || "No description"}*/}
-          {/*      </option>*/}
-          {/*    )}*/}
-          {/*  </For>*/}
-          {/*</select>*/}
-        </div>
-        <button
-          class={"btn btn-error btn-square btn-sm gap-2"}
-          onClick={() => deleteHandler(form.handlers.length - 1)}
-          disabled={
-            form.handlers.length === 1 || form.handlers[0].origin === "msw"
-          }
-        >
-          <TrashIcon />
-        </button>
       </div>
+      <div class={"flex flex-nowrap h-full gap-2 px-3"}>
+        <div class={"w-[350px] h-full overflow-auto pr-1"}>
+          <Button
+            block
+            size={"sm"}
+            theme={"tertiary"}
+            onClick={addNewHandler}
+            leftIcon={<PlusIcon />}
+          >
+            Add new handler
+          </Button>
+          <div class={"my-2"}>
+            <HandlersList
+              activeHandlerId={form.selectedHandler}
+              onDelete={(handler) => deleteHandler(handler)}
+              onSelect={(handler) => selectHandler(handler)}
+              handlers={form.handlers}
+            />
+          </div>
+        </div>
+        <div class={"flex-1 gap-2"}>
+          <div class={"flex gap-2"}>
+            <div class={"w-[100px]"}>
+              <Select
+                size={"sm"}
+                {...methodSelectOptions.props()}
+                {...methodSelectOptions.controlled(
+                  () => form.method as any,
+                  (value) => setForm("method", value),
+                )}
+                options={methodSelectOptions.options()}
+                theme={"filled"}
+                multiple={false}
+                aria-label={"Method"}
+              />
+            </div>
+            <div class={"flex-1"}>
+              <TextField
+                size={"sm"}
+                placeholder={"Type URL"}
+                value={form.url}
+                onChange={(value) => setForm("url", value)}
+              />
+            </div>
+            <div class={"ml-auto flex gap-2"}>
+              <Button
+                size={"sm"}
+                theme={"secondary"}
+                leftIcon={<SparklesIcon />}
+                onClick={() => formatJson()}
+              >
+                Format
+              </Button>
+              <Button
+                theme={"primary"}
+                size={"sm"}
+                disabled={!isValid()}
+                onClick={onSubmit}
+                leftIcon={<CheckIcon />}
+              >
+                Submit
+              </Button>
+            </div>
+          </div>
 
-      <HandlerFormProvider form={routeForm}>
-        <HandlerForm />
-      </HandlerFormProvider>
+          <div class={"h-full mt-2"}>
+            <HandlerFormProvider form={routeForm}>
+              <HandlerForm />
+            </HandlerFormProvider>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

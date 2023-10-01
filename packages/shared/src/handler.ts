@@ -2,7 +2,7 @@ import { DevtoolsHandler, DevtoolsRoute } from "./types";
 import { compose, context, RequestHandler, rest } from "msw";
 import { faker } from "@faker-js/faker";
 
-type RestMethodHandler = typeof rest[keyof typeof rest];
+type RestMethodHandler = (typeof rest)[keyof typeof rest];
 
 export function createHandler(handler: DevtoolsRoute): RequestHandler | null {
   const { method, url } = handler;
@@ -34,7 +34,7 @@ export function createHandler(handler: DevtoolsRoute): RequestHandler | null {
       delay ? context.delay(delay) : (source) => source,
       resolvedHeaders ? context.set(resolvedHeaders) : (source) => source,
       context.status(status),
-      context.json(jsonResponse)
+      context.json(jsonResponse),
     );
 
     return res(transformer);
@@ -50,7 +50,7 @@ function resolveFakerValue(key: string, value: string): string | number {
 function resolveRestHandler(key: string): RestMethodHandler | null {
   const restMethod: RestMethodHandler | undefined = Reflect.get(
     rest,
-    key.toLowerCase()
+    key.toLowerCase(),
   );
   return restMethod ?? null;
 }
@@ -58,18 +58,21 @@ function resolveRestHandler(key: string): RestMethodHandler | null {
 function resolveCustomHeaders(headers: DevtoolsHandler["headers"]) {
   if (!headers || headers.length === 0) return null;
 
-  return headers.reduce((acc, header) => {
-    if (acc[header.key]) {
-      acc[header.key] = coerceArray(acc[header.key]).concat(header.value);
-    }
-    acc[header.key] = header.value;
-    return acc;
-  }, {} as Record<string, string | string[]>);
+  return headers.reduce(
+    (acc, header) => {
+      if (acc[header.key]) {
+        acc[header.key] = coerceArray(acc[header.key]).concat(header.value);
+      }
+      acc[header.key] = header.value;
+      return acc;
+    },
+    {} as Record<string, string | string[]>,
+  );
 }
 
 function traverseDeep(
   json: Record<string, any>,
-  walkFn: (key: string, value: string | number) => string | number
+  walkFn: (key: string, value: string | number) => string | number,
 ) {
   const keys = Object.keys(json);
   for (const key of keys) {
@@ -90,7 +93,10 @@ function traverseDeep(
 }
 
 function resolveRouteHandler(route: DevtoolsRoute): DevtoolsHandler {
-  return route.handlers[route.selectedHandler ?? 0];
+  return (
+    route.handlers.find((handler) => handler.id === route.selectedHandler) ??
+    route.handlers[0]
+  );
 }
 
 function coerceArray<T>(data: T | T[]): T[] {

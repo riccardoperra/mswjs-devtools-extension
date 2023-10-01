@@ -1,5 +1,5 @@
 import { createSignal, For, mapArray, Show, VoidProps } from "solid-js";
-import { Checkbox, createSelectOptions, Select } from "@codeui/kit";
+import { Checkbox, createSelectOptions, IconButton, Select } from "@codeui/kit";
 import { DevtoolsRoute } from "@mswjs-devtools/shared";
 import { CreateRouteHandlerForm } from "./CreateRouteForm/CreateRouteHandlerForm";
 import { ScrollableWrapper } from "../../components/ScrollableWrapper/ScrollableWrapper";
@@ -24,7 +24,7 @@ export function RoutesHandler(props: VoidProps<RoutesProps>) {
 
   return (
     <div class={"flex flex-col h-full"}>
-      <div class="px-4 my-3 flex items-center justify-between">
+      <div class="px-4 my-2 flex items-center justify-between">
         <h1 class="text-lg font-bold">Available routes</h1>
         <Button
           size={"sm"}
@@ -93,19 +93,31 @@ export function RoutesHandler(props: VoidProps<RoutesProps>) {
                     </span>
                   </Show>
                   <div class="flex gap-2 ml-auto">
-                    <button
-                      class="btn btn-sm btn-ghost btn-circle"
+                    <IconButton
+                      variant={"ghost"}
+                      theme={"secondary"}
+                      size={"xs"}
+                      aria-label={"edit"}
                       onClick={() => setEditingRoute(route)}
                     >
-                      <PencilSquareIcon />
-                    </button>
+                      <PencilSquareIcon
+                        width={16}
+                        height={16}
+                      />
+                    </IconButton>
 
-                    <button
-                      class="btn btn-sm btn-ghost btn-circle"
-                      onClick={() => props.onDeleteHandler(route.id)}
+                    <IconButton
+                      variant={"ghost"}
+                      theme={"secondary"}
+                      size={"xs"}
+                      aria-label={"edit"}
+                      onClick={() => setEditingRoute(route)}
                     >
-                      <TrashIcon />
-                    </button>
+                      <TrashIcon
+                        width={16}
+                        height={16}
+                      />
+                    </IconButton>
                   </div>
                 </div>
               </div>

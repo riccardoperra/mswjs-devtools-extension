@@ -42,14 +42,14 @@ function $createHandlerForm(form: CreateRouteForm) {
     get setHandler() {
       return createDerivedSetter(form.setForm, [
         "handlers",
-        form.selectedHandlerIndex(),
+        form.form.handlers.indexOf(form.selectedHandler()),
       ]);
     },
   };
 }
 
 export function HandlerFormProvider(
-  props: ParentProps<HandlerFormProviderProps>
+  props: ParentProps<HandlerFormProviderProps>,
 ): JSXElement {
   return (
     <Context.Provider value={$createHandlerForm(props.form)}>

@@ -113,4 +113,4 @@ export const StatusCodes = [
   },
   { value: 527, label: "527 - Railgun Error (Cloudflare)" },
   { value: 561, label: "561 - Unauthorized (AWS ELB)" },
-] as const;
+];

@@ -21,14 +21,15 @@ export interface EnhancedDevtoolsRoute extends DevtoolsRoute {
 }
 
 export interface DevtoolsRoute {
-  readonly id: string;
-  readonly url: string;
-  readonly method: string;
-  readonly handlers: readonly DevtoolsHandler[];
-  readonly selectedHandler?: number;
+  id: string;
+  url: string;
+  method: string;
+  handlers: DevtoolsHandler[];
+  selectedHandler?: string;
 }
 
 export interface DevtoolsHandler {
+  id: string;
   response: string;
   status: number;
   delay: number | null;
