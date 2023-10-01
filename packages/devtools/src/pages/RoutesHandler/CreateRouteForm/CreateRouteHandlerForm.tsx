@@ -1,4 +1,4 @@
-import { createEffect, For } from "solid-js";
+import { createEffect, createMemo, For, mapArray } from "solid-js";
 import { CheckIcon } from "../../../components/CheckIcon";
 import { SparklesIcon } from "../../../components/SparklesIcon";
 import {
@@ -11,7 +11,13 @@ import { HandlerFormProvider } from "./createHandlerForm";
 import { HandlerForm } from "./HandlerForm";
 import { PlusIcon } from "../../../components/PlusIcon";
 import { TrashIcon } from "../../../components/TrashIcon";
-import { Button } from "@codeui/kit";
+import {
+  Button,
+  createSelectOptions,
+  IconButton,
+  Select,
+  TextField,
+} from "@codeui/kit";
 
 interface CreateRouteHandlerFormProps {
   initialValue?: EnhancedDevtoolsRoute;
@@ -31,6 +37,31 @@ export function CreateRouteHandlerForm(props: CreateRouteHandlerFormProps) {
     deleteHandler,
     selectedHandlerIndex,
   } = routeForm;
+
+  const methodSelectOptions = createSelectOptions(
+    () =>
+      routeMethods.map((route) => ({
+        label: route,
+        value: route,
+      })),
+    { key: "label", valueKey: "value" },
+  );
+
+  const formHandlers = mapArray(
+    () => form.handlers,
+    (handler, index) => ({
+      ...handler,
+      label: `Response ${index()} (${handler.status}) - ${
+        handler.description || "No description"
+      }`,
+      value: index(),
+    }),
+  );
+
+  const handlersSelectOptions = createSelectOptions(formHandlers, {
+    valueKey: "value",
+    key: "label",
+  });
 
   createEffect(() => {
     if (props.initialValue) {
@@ -52,7 +83,7 @@ export function CreateRouteHandlerForm(props: CreateRouteHandlerFormProps) {
   return (
     <div
       class={
-        "w-[100%] h-[100%] absolute bg-base-200 w-full bottom-0 right-0 flex flex-col"
+        "w-[100%] h-[100%] absolute bg-base-200 w-full bottom-0 right-0 flex flex-col z-20"
       }
     >
       <div class="px-4 py-2 flex items-center justify-between shadow-lg border-t border-base-300">
@@ -79,42 +110,32 @@ export function CreateRouteHandlerForm(props: CreateRouteHandlerFormProps) {
       </div>
       <div class={"mt-2 px-4"}>
         <div class={"flex gap-2"}>
-          <div class="form-control">
-            <div class="input-group">
-              <select
-                class="select select-sm select-bordered"
-                value={form.method}
-                onInput={(event) =>
-                  setForm("method", event.currentTarget.value)
-                }
-              >
-                <For each={routeMethods}>
-                  {(method) => {
-                    const selected = () => method === form.method;
-                    return (
-                      <option
-                        selected={selected()}
-                        aria-selected={selected()}
-                      >
-                        {method}
-                      </option>
-                    );
-                  }}
-                </For>
-              </select>
-              <input
-                type="text"
-                placeholder="Type URL"
-                class="input input-bordered input-sm w-full max-w-xs"
-                value={form.url}
-                onInput={(event) => setForm("url", event.currentTarget.value)}
-              />
-            </div>
+          <div class={"w-[100px]"}>
+            <Select
+              size={"sm"}
+              {...methodSelectOptions.props()}
+              {...methodSelectOptions.controlled(
+                () => form.method,
+                (value) => setForm("method", value),
+              )}
+              options={methodSelectOptions.options()}
+              theme={"filled"}
+              multiple={false}
+              aria-label={"Method"}
+            />
+          </div>
+          <div class={"flex-1"}>
+            <TextField
+              size={"sm"}
+              placeholder={"Type URL"}
+              value={form.url}
+              onChange={(value) => setForm("url", value)}
+            />
           </div>
 
           <div class={"ml-auto flex gap-2"}>
             <Button
-              size={"xs"}
+              size={"sm"}
               theme={"secondary"}
               leftIcon={<SparklesIcon />}
               onClick={() => formatJson()}
@@ -123,7 +144,7 @@ export function CreateRouteHandlerForm(props: CreateRouteHandlerFormProps) {
             </Button>
             <Button
               theme={"primary"}
-              size={"xs"}
+              size={"sm"}
               disabled={!isValid()}
               onClick={onSubmit}
               leftIcon={<CheckIcon />}
@@ -136,37 +157,52 @@ export function CreateRouteHandlerForm(props: CreateRouteHandlerFormProps) {
 
       <div
         class={
-          "mt-2 px-4 py-2 border-y border-opacity-20 border-base-content flex items-center gap-2 bg-base-100"
+          "mt-2 px-4 py-2 border-y border-opacity-20 border-base-content flex items-center gap-2"
         }
       >
-        <button
-          class={"btn btn-primary btn-square btn-sm gap-2"}
+        <IconButton
+          theme={"tertiary"}
+          aria-label={"Add new handler"}
           onClick={addNewHandler}
         >
           <PlusIcon />
-        </button>
+        </IconButton>
         <div class="form-control w-full">
-          <select
-            class="select select-sm select-bordered"
-            onChange={(event) =>
-              setForm(
-                "selectedHandler",
-                parseInt(event.currentTarget.value, 10)
-              )
-            }
-          >
-            <For each={form.handlers}>
-              {(handler, index) => (
-                <option
-                  selected={index() === selectedHandlerIndex()}
-                  value={index()}
-                >
-                  Response {index} ({handler.status}) -{" "}
-                  {handler.description || "No description"}
-                </option>
-              )}
-            </For>
-          </select>
+          <Select
+            aria-label={"Handlers"}
+            theme={"filled"}
+            multiple={false}
+            {...handlersSelectOptions.props()}
+            {...handlersSelectOptions.controlled(
+              selectedHandlerIndex,
+              (value) => {
+                console.log(value);
+                setForm("selectedHandler", value);
+              },
+            )}
+            options={handlersSelectOptions.options()}
+          />
+          {/*<select*/}
+          {/*  class="select select-sm select-bordered"*/}
+          {/*  onChange={(event) =>*/}
+          {/*    setForm(*/}
+          {/*      "selectedHandler",*/}
+          {/*      parseInt(event.currentTarget.value, 10),*/}
+          {/*    )*/}
+          {/*  }*/}
+          {/*>*/}
+          {/*  <For each={form.handlers}>*/}
+          {/*    {(handler, index) => (*/}
+          {/*      <option*/}
+          {/*        selected={index() === selectedHandlerIndex()}*/}
+          {/*        value={index()}*/}
+          {/*      >*/}
+          {/*        Response {index} ({handler.status}) -{" "}*/}
+          {/*        {handler.description || "No description"}*/}
+          {/*      </option>*/}
+          {/*    )}*/}
+          {/*  </For>*/}
+          {/*</select>*/}
         </div>
         <button
           class={"btn btn-error btn-square btn-sm gap-2"}

@@ -11,7 +11,7 @@ import { worker } from "./mocks/browser";
 import { createEffect } from "solid-js";
 
 function buildSerializedRouteHandlers(
-  handlers: readonly RequestHandler[]
+  handlers: readonly RequestHandler[],
 ): EnhancedDevtoolsRoute[] {
   return handlers.map((handler) => {
     return {
@@ -37,7 +37,7 @@ worker.start();
 
 export function App() {
   const [routes, setRoutes] = createStore<EnhancedDevtoolsRoute[]>(
-    buildSerializedRouteHandlers(worker.listHandlers())
+    buildSerializedRouteHandlers(worker.listHandlers()),
   );
   // const [routes, setRoutes] = createStore<EnhancedDevtoolsRoute[]>([]);
 
@@ -50,7 +50,7 @@ export function App() {
     worker.resetHandlers(
       ...routes
         .map((route) => createHandler(route))
-        .filter((route): route is NonNullable<typeof route> => !!route)
+        .filter((route): route is NonNullable<typeof route> => !!route),
     );
   });
 
@@ -67,7 +67,7 @@ export function App() {
             (route) => ({
               ...route,
               ...data,
-            })
+            }),
           );
         },
         onCreateHandler(data) {
@@ -86,7 +86,14 @@ export function App() {
           console.log("enabled", enabled);
         },
         setSkipRoute(id: string, skip: boolean) {
-          console.log("setSkipRoute", id, skip);
+          setRoutes((routes) =>
+            routes.map((route) => {
+              if (route.id === id) {
+                return { ...route, skip: !skip };
+              }
+              return route;
+            }),
+          );
         },
         forceReload() {
           console.log("force reload");

@@ -1,5 +1,5 @@
 import { ReloadIcon } from "./components/ReloadIcon";
-import { createSignal, Match, Switch, VoidProps } from "solid-js";
+import { createEffect, createSignal, Match, Switch, VoidProps } from "solid-js";
 import { DevToolPanelController } from "./controller";
 import { MockConfigHandler } from "./pages/MockConfigHandler/MockConfigHandler";
 import { RoutesHandler } from "./pages/RoutesHandler/RoutesHandler";
@@ -7,7 +7,6 @@ import * as styles from "./DevtoolPanel.css";
 import "./ui/global.css";
 import { Box } from "./components/Box/Box";
 import { Button } from "@codeui/kit";
-import { themeClass } from "@codeui/kit";
 
 interface DevtoolPanel {
   controller: DevToolPanelController;
@@ -20,11 +19,12 @@ export function DevtoolPanel(props: VoidProps<DevtoolPanel>) {
     return activeTab() === index ? `tab tab-active` : `tab`;
   };
 
+  createEffect(() => console.log(props.controller.routes));
+
+  document.body.setAttribute("data-cui-theme", "dark");
+
   return (
-    <div
-      class={`${styles.wrapper} ${themeClass}`}
-      data-cui-theme={"dark"}
-    >
+    <div class={styles.wrapper}>
       <div class={styles.header}>
         <Box
           display={"flex"}
