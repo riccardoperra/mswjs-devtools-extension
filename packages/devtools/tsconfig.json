@@ -5,6 +5,8 @@
     "composite": false,
     "sourceMap": true,
     "baseUrl": "./",
+    "allowSyntheticDefaultImports": true,
+    "skipDefaultLibCheck": true,
     "jsx": "preserve",
     "resolveJsonModule": true,
     "jsxImportSource": "solid-js",

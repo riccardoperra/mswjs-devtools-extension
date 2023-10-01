@@ -5,6 +5,9 @@
     "sourceMap": true,
     "jsx": "preserve",
     "resolveJsonModule": true,
+    "resolvePackageJsonExports": true,
+    "allowSyntheticDefaultImports": true,
+    "skipDefaultLibCheck": true,
     "jsxImportSource": "solid-js",
     "preserveSymlinks": true,
     "types": ["@types/node"]

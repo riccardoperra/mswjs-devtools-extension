@@ -7,7 +7,7 @@ import { PencilSquareIcon } from "../../components/PencilSquareIcon";
 import { TrashIcon } from "../../components/TrashIcon";
 import { RouteInfoLabel } from "./RouteInfoLabel/RouteInfoLabel";
 import { EnhancedDevtoolsRoute } from "@mswjs-devtools/shared/src";
-import { Button } from "../../components/Button/Button";
+import { Button } from "@codeui/kit";
 
 interface RoutesProps {
   routes: EnhancedDevtoolsRoute[];
@@ -28,7 +28,7 @@ export function RoutesHandler(props: VoidProps<RoutesProps>) {
         <h1 class="text-lg font-bold">Available routes</h1>
         <Button
           size={"sm"}
-          variant={"primary"}
+          theme={"secondary"}
           onClick={() => setShowCreateForm(true)}
         >
           Add new

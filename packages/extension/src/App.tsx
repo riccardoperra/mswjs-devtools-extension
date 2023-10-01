@@ -11,7 +11,7 @@ import { version } from "../../../package.json";
 import { devtoolsMessenger } from "./devtoolsMessenger";
 import { NotDetected } from "./components/NotDetected";
 import { LoadingPage } from "./components/LoadingPage/LoadingPage";
-import { SerializedMockConfig, SerializedRouteHandler } from "../shared/types";
+import { SerializedMockConfig } from "../shared/types";
 import { Footer } from "./Footer";
 import * as styles from "./App.css";
 import {

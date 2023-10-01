@@ -6,7 +6,8 @@ import { RoutesHandler } from "./pages/RoutesHandler/RoutesHandler";
 import * as styles from "./DevtoolPanel.css";
 import "./ui/global.css";
 import { Box } from "./components/Box/Box";
-import { Button } from "./components/Button/Button";
+import { Button } from "@codeui/kit";
+import { themeClass } from "@codeui/kit";
 
 interface DevtoolPanel {
   controller: DevToolPanelController;
@@ -20,7 +21,10 @@ export function DevtoolPanel(props: VoidProps<DevtoolPanel>) {
   };
 
   return (
-    <div class={styles.wrapper}>
+    <div
+      class={`${styles.wrapper} ${themeClass}`}
+      data-cui-theme={"dark"}
+    >
       <div class={styles.header}>
         <Box
           display={"flex"}
@@ -45,7 +49,8 @@ export function DevtoolPanel(props: VoidProps<DevtoolPanel>) {
           <Box marginLeft={"auto"}>
             <Button
               size={"sm"}
-              icon={<ReloadIcon />}
+              theme={"primary"}
+              leftIcon={<ReloadIcon />}
               onClick={props.controller.forceReload}
             >
               Reload

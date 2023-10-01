@@ -22,7 +22,7 @@ export default defineConfig((config) => {
     target: "esnext",
     format: config.watch ? "esm" : ["cjs", "esm"],
     entryPoints: [...baseEntries],
-    esbuildPlugins: [solidPlugin(), vanillaExtractPlugin({ processCss })],
+    esbuildPlugins: [solidPlugin(), vanillaExtractPlugin()],
     noExternal: ["solid-codemirror"],
     external: [
       "solid-js",
