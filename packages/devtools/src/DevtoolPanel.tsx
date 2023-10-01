@@ -7,6 +7,8 @@ import * as styles from "./DevtoolPanel.css";
 import "./ui/global.css";
 import { Box } from "./components/Box/Box";
 import { Button, Checkbox } from "@codeui/kit";
+import { UploadIcon } from "./components/UploadIcon";
+import { DownloadIcon } from "./components/DownloadIcon";
 
 interface DevtoolPanel {
   controller: DevToolPanelController;
@@ -18,8 +20,6 @@ export function DevtoolPanel(props: VoidProps<DevtoolPanel>) {
   const getTabClasses = (index: number) => {
     return activeTab() === index ? `tab tab-active` : `tab`;
   };
-
-  createEffect(() => console.log(props.controller.routes));
 
   document.body.setAttribute("data-cui-theme", "dark");
 
@@ -43,11 +43,72 @@ export function DevtoolPanel(props: VoidProps<DevtoolPanel>) {
               Enable MockServiceWorker
             </span>
           </div>
-          <Box marginLeft={"auto"}>
+          <Box
+            marginLeft={"auto"}
+            display={"flex"}
+            gap={"2"}
+          >
+            <Button
+              size={"sm"}
+              theme={"secondary"}
+              leftIcon={
+                <UploadIcon
+                  width={18}
+                  height={18}
+                />
+              }
+              onClick={() =>
+                document.querySelector("#importFileInput")?.click()
+              }
+            >
+              <input
+                id={"importFileInput"}
+                type={"file"}
+                accept={"application/json"}
+                class={"sr-only"}
+              />
+              Import
+            </Button>
+            <Button
+              size={"sm"}
+              theme={"secondary"}
+              leftIcon={
+                <DownloadIcon
+                  width={18}
+                  height={18}
+                />
+              }
+              onClick={() => {
+                const link = document.createElement("a");
+                link.setAttribute("download", "");
+                const file = new Blob(
+                  [JSON.stringify(props.controller.routes)],
+                  {
+                    type: "application/json",
+                  },
+                );
+                link.href = URL.createObjectURL(file);
+                link.click();
+                link.remove();
+              }}
+            >
+              <input
+                id={"importFileInput"}
+                type={"file"}
+                accept={"application/json"}
+                class={"sr-only"}
+              />
+              Export
+            </Button>
             <Button
               size={"sm"}
               theme={"primary"}
-              leftIcon={<ReloadIcon />}
+              leftIcon={
+                <ReloadIcon
+                  width={18}
+                  height={18}
+                />
+              }
               onClick={props.controller.forceReload}
             >
               Reload

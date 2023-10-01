@@ -25,6 +25,7 @@ const responsiveProperties = defineProperties({
     marginBottom: spacing,
     marginLeft: spacing,
     marginRight: spacing,
+    gap: spacing,
     // etc.
   },
   shorthands: {
