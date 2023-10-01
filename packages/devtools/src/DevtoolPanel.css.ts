@@ -12,7 +12,7 @@ export const header = style({
   display: "flex",
   alignItems: "center",
   borderBottom: "1px solid hsl(0deg 0% 100% / 10%)",
-  height: "46px",
+  height: "52px",
   flexShrink: 1,
   paddingLeft: themeVars.global.spacing["4"],
   paddingRight: themeVars.global.spacing["4"],
@@ -29,4 +29,5 @@ export const content = style({
   display: "flex",
   flexDirection: "column",
   flexShrink: 1,
+  background: themeVars.global.colors.base3,
 });

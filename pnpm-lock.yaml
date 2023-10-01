@@ -71,9 +71,6 @@ importers:
       '@solid-primitives/props':
         specifier: ^3.1.8
         version: 3.1.8(solid-js@1.7.12)
-      '@types/prettier':
-        specifier: ^3.0.0
-        version: 3.0.0
       '@vanilla-extract/css':
         specifier: ^1.13.0
         version: 1.13.0
@@ -98,6 +95,9 @@ importers:
       solid-js:
         specifier: ^1.7.12
         version: 1.7.12
+      statebuilder:
+        specifier: ^0.4.2
+        version: 0.4.2
     devDependencies:
       '@rollup/plugin-alias':
         specifier: ^5.0.0
@@ -3109,13 +3109,6 @@ packages:
 
   /@types/pluralize@0.0.29:
     resolution: {integrity: sha512-BYOID+l2Aco2nBik+iYS4SZX0Lf20KPILP5RGmM1IgzdwNdTs0eebiFriOPcej1sX9mLnSoiNte5zcFxssgpGA==}
-    dev: false
-
-  /@types/prettier@3.0.0:
-    resolution: {integrity: sha512-mFMBfMOz8QxhYVbuINtswBp9VL2b4Y0QqYHwqLz3YbgtfAcat2Dl6Y1o4e22S/OVE6Ebl9m7wWiMT2lSbAs1wA==}
-    deprecated: This is a stub types definition. prettier provides its own type definitions, so you do not need this installed.
-    dependencies:
-      prettier: 3.0.3
     dev: false
 
   /@types/resolve@1.20.2:
@@ -6272,6 +6265,19 @@ packages:
       rxjs:
         optional: true
     dependencies:
+      rxjs: 7.8.1
+      solid-js: 1.7.12
+    dev: false
+
+  /statebuilder@0.4.2:
+    resolution: {integrity: sha512-KGG7+FzdGg6rzl135zwU69wz4IbL8/ev5ooxE6PoQ7Cykl+8N6x9z6lNfy9Qc7PTH7HxDTkhxEvPkBNrkSfzCA==}
+    peerDependenciesMeta:
+      '@solid-primitives/event-bus':
+        optional: true
+      rxjs:
+        optional: true
+    dependencies:
+      '@solid-primitives/event-bus': 1.0.8(solid-js@1.7.12)
       rxjs: 7.8.1
       solid-js: 1.7.12
     dev: false

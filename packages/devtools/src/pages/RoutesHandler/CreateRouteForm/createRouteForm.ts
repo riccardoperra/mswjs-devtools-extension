@@ -7,17 +7,18 @@ import {
 } from "@mswjs-devtools/shared";
 import { createStore } from "solid-js/store";
 import { format } from "prettier";
-import parserBabel from "prettier/parser-babel";
-import { batch } from "solid-js";
+
+const defaultHandlerId = generateUUID();
 
 function getInitialValue(): DevtoolsRoute {
   return {
     id: generateUUID(),
     method: routeMethods[0],
     url: "",
-    selectedHandler: 0,
+    selectedHandler: defaultHandlerId,
     handlers: [
       {
+        id: defaultHandlerId,
         response: "{}",
         status: 200,
         delay: 0,
@@ -31,8 +32,14 @@ export type CreateRouteForm = ReturnType<typeof createRouteForm>;
 
 export function createRouteForm() {
   const [form, setForm] = createStore<DevtoolsRoute>(getInitialValue());
-  const selectedHandlerIndex = () => form.selectedHandler ?? 0;
-  const selectedHandler = () => form.handlers[selectedHandlerIndex()];
+
+  const selectedHandler = () =>
+    form.selectedHandler
+      ? form.handlers.find((handler) => handler.id === form.selectedHandler) ??
+        form.handlers[0]
+      : form.handlers[0];
+
+  const selectedHandlerIndex = () => form.handlers.indexOf(selectedHandler());
 
   const isHandlerValid = (handler: DevtoolsHandler) => {
     if (handler.origin === "msw") return true;
@@ -52,15 +59,18 @@ export function createRouteForm() {
     form,
     setForm,
     selectedHandler,
-    selectedHandlerIndex,
 
-    deleteHandler(index: number) {
-      batch(() => {
-        setForm("handlers", (handlers) =>
-          handlers.filter((_, i) => i !== index),
-        );
-        setForm("selectedHandler", form.handlers.length - 1);
-      });
+    deleteHandler(handler: DevtoolsHandler) {
+      setForm("handlers", (handlers) =>
+        handlers.filter(({ id }) => id !== handler.id),
+      );
+      const lastHandler = form.handlers[form.handlers.length - 1];
+      setForm("selectedHandler", lastHandler.id);
+    },
+
+    selectHandler(handler: DevtoolsHandler) {
+      console.info("select handler", handler.id);
+      setForm("selectedHandler", handler.id);
     },
 
     fromEnhancedRoute(value: EnhancedDevtoolsRoute) {
@@ -78,31 +88,31 @@ export function createRouteForm() {
     },
 
     formatJson(handler: DevtoolsHandler = selectedHandler()) {
-      const formattedResponse = format(handler.response, {
-        tabWidth: 2,
-        printWidth: 100,
-        parser: "json",
-        plugins: [parserBabel],
-      });
-
-      setForm(
-        "handlers",
-        selectedHandlerIndex(),
-        "response",
-        formattedResponse,
-      );
+      import("prettier/plugins/babel")
+        .then((babel) =>
+          format(handler.response, {
+            tabWidth: 2,
+            printWidth: 100,
+            parser: "json5",
+            plugins: [babel],
+          }),
+        )
+        .then((response) => {
+          setForm("handlers", selectedHandlerIndex(), "response", response);
+        });
     },
 
     addNewHandler() {
+      const id = generateUUID();
       setForm("handlers", form.handlers.length, {
-        response: "",
+        id: id,
+        response: "{}",
         status: 200,
         delay: 0,
         description: "",
         origin: "custom",
       });
-
-      setForm("selectedHandler", form.handlers.length - 1);
+      setForm("selectedHandler", id);
     },
   };
 }
