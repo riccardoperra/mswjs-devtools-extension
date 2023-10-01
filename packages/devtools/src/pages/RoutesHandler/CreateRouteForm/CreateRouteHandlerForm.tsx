@@ -11,7 +11,7 @@ import { HandlerFormProvider } from "./createHandlerForm";
 import { HandlerForm } from "./HandlerForm";
 import { PlusIcon } from "../../../components/PlusIcon";
 import { TrashIcon } from "../../../components/TrashIcon";
-import { Button } from "../../../components/Button/Button";
+import { Button } from "@codeui/kit";
 
 interface CreateRouteHandlerFormProps {
   initialValue?: EnhancedDevtoolsRoute;
@@ -114,19 +114,19 @@ export function CreateRouteHandlerForm(props: CreateRouteHandlerFormProps) {
 
           <div class={"ml-auto flex gap-2"}>
             <Button
-              size={"sm"}
-              variant={"secondary"}
-              icon={<SparklesIcon />}
+              size={"xs"}
+              theme={"secondary"}
+              leftIcon={<SparklesIcon />}
               onClick={() => formatJson()}
             >
               Format
             </Button>
             <Button
-              variant={"primary"}
-              size={"sm"}
+              theme={"primary"}
+              size={"xs"}
               disabled={!isValid()}
               onClick={onSubmit}
-              icon={<CheckIcon />}
+              leftIcon={<CheckIcon />}
             >
               Submit
             </Button>

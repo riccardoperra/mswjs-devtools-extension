@@ -26,6 +26,7 @@
     "webextension-polyfill": "^0.10.0"
   },
   "dependencies": {
+    "@codeui/kit": "^0.0.24",
     "@mswjs-devtools/devtools": "workspace:*",
     "@mswjs-devtools/shared": "workspace:*",
     "msw": "^0.47.4",

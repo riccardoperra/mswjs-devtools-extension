@@ -6,8 +6,6 @@
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
