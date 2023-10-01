@@ -8,7 +8,8 @@ import {
 import { RequestHandler } from "msw";
 import { createStore } from "solid-js/store";
 import { worker } from "./mocks/browser";
-import { createEffect } from "solid-js";
+import { createEffect, createSignal, Show } from "solid-js";
+import { LoadingPage } from "./components/LoadingPage/LoadingPage";
 
 function buildSerializedRouteHandlers(
   handlers: readonly RequestHandler[],
@@ -18,6 +19,7 @@ function buildSerializedRouteHandlers(
       id: generateUUID(),
       handlers: [
         {
+          id: generateUUID(),
           response: "",
           delay: 0,
           status: 200,
@@ -33,76 +35,82 @@ function buildSerializedRouteHandlers(
   });
 }
 
-worker.start();
+const [loading, setLoading] = createSignal(true);
+
+worker.start().then((res) => setTimeout(() => setLoading(false), 500));
 
 export function App() {
   const [routes, setRoutes] = createStore<EnhancedDevtoolsRoute[]>(
     buildSerializedRouteHandlers(worker.listHandlers()),
   );
-  // const [routes, setRoutes] = createStore<EnhancedDevtoolsRoute[]>([]);
 
-  // setInterval(() => {
-  //   fetch(api.fetchAllTodos).then((res) => res.json());
-  // }, 2000);
+  const serializedRoutes = () =>
+    routes
+      .map((route) => createHandler(route))
+      .filter((route): route is NonNullable<typeof route> => !!route);
 
   createEffect(() => {
     JSON.parse(JSON.stringify(routes));
-    worker.resetHandlers(
-      ...routes
-        .map((route) => createHandler(route))
-        .filter((route): route is NonNullable<typeof route> => !!route),
-    );
+    worker.resetHandlers(...serializedRoutes());
   });
 
   return (
-    <DevtoolPanel
-      controller={{
-        enabled: true,
-        mocks: [],
-        routes,
-        onEditHandler(id, data) {
-          console.log("onEditHandler", { ...data });
-          setRoutes(
-            (route) => route.id === id,
-            (route) => ({
-              ...route,
+    <Show
+      fallback={<LoadingPage />}
+      when={!loading()}
+      keyed={false}
+    >
+      <DevtoolPanel
+        controller={{
+          enabled: true,
+          mocks: [],
+          routes,
+          onEditHandler(id, data) {
+            setRoutes(
+              (route) => route.id === id,
+              (route) => ({
+                ...route,
+                ...data,
+              }),
+            );
+          },
+          onCreateHandler(data) {
+            const route: EnhancedDevtoolsRoute = {
+              skip: false,
               ...data,
-            }),
-          );
-        },
-        onCreateHandler(data) {
-          const route: EnhancedDevtoolsRoute = {
-            skip: false,
-            ...data,
-          };
-          console.log("onCreateHandler", route);
-
-          setRoutes((routes) => [...routes, route]);
-        },
-        setSkipMock(id: string, skip: boolean) {
-          console.log("setSkipMock", id, skip);
-        },
-        setEnabled(enabled: boolean) {
-          console.log("enabled", enabled);
-        },
-        setSkipRoute(id: string, skip: boolean) {
-          setRoutes((routes) =>
-            routes.map((route) => {
-              if (route.id === id) {
-                return { ...route, skip: !skip };
-              }
-              return route;
-            }),
-          );
-        },
-        forceReload() {
-          console.log("force reload");
-        },
-        onDeleteHandler(id: string) {
-          console.log("DELETE ROUTE", id);
-          setRoutes((routes) => routes.filter((route) => route.id !== id));
-        },
-      }}
-    />
+            };
+            setRoutes((routes) => [...routes, route]);
+          },
+          setSkipMock(id: string, skip: boolean) {
+            console.log("setSkipMock", id, skip);
+          },
+          setEnabled(enabled: boolean) {
+            if (!enabled) {
+              worker.stop();
+            } else {
+              worker.start();
+              worker.resetHandlers(...serializedRoutes());
+            }
+          },
+          setSkipRoute(id: string, skip: boolean) {
+            setRoutes((routes) =>
+              routes.map((route) => {
+                if (route.id === id) {
+                  return { ...route, skip: !skip };
+                }
+                return route;
+              }),
+            );
+          },
+          forceReload() {
+            console.log("force reload");
+          },
+          onDeleteHandler(id: string) {
+            console.log("DELETE ROUTE", id);
+            setRoutes((routes) => routes.filter((route) => route.id !== id));
+          },
+        }}
+      />
+    </Show>
   );
 }

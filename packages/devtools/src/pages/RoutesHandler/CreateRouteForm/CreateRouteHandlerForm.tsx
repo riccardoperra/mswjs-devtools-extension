@@ -1,4 +1,4 @@
-import { createEffect, For, mapArray } from "solid-js";
+import { createEffect } from "solid-js";
 import { CheckIcon } from "../../../components/CheckIcon";
 import { SparklesIcon } from "../../../components/SparklesIcon";
 import {
@@ -10,7 +10,6 @@ import { createRouteForm } from "./createRouteForm";
 import { HandlerFormProvider } from "./createHandlerForm";
 import { HandlerForm } from "./HandlerForm";
 import { PlusIcon } from "../../../components/PlusIcon";
-import { TrashIcon } from "../../../components/TrashIcon";
 import {
   Button,
   createSelectOptions,
@@ -19,7 +18,6 @@ import {
   TextField,
 } from "@codeui/kit";
 import { HandlersList } from "./HandlersList/HandlersList";
-import { CloseIcon } from "@codeui/kit/dist/types/icons";
 
 interface CreateRouteHandlerFormProps {
   initialValue?: EnhancedDevtoolsRoute;
