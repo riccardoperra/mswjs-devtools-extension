@@ -97,7 +97,11 @@ export function CreateRouteHandlerForm(props: CreateRouteHandlerFormProps) {
         </IconButton>
       </div>
       <div class={"flex flex-nowrap h-full gap-2 px-3"}>
-        <div class={"w-[350px] h-full overflow-auto pr-1"}>
+        <div
+          class={
+            "min-w-[250px] w-full max-w-[350px] flex-shrink-1 h-full overflow-auto pr-1"
+          }
+        >
           <Button
             block
             size={"sm"}

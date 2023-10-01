@@ -36,7 +36,7 @@ export function HandlerForm() {
         <Match when={routeTab() === 0}>
           <div
             class={
-              "px-4 py-2 flex gap-2 bg-neutral-900 shadow rounded-tl-lg rounded-tr-lg"
+              "px-4 py-2 flex gap-2 bg-neutral-900 shadow rounded-tl-lg rounded-tr-lg flex-wrap"
             }
           >
             <div class="form-control flex-row items-center gap-2">
@@ -62,7 +62,7 @@ export function HandlerForm() {
               <label class="label">
                 <span class="label-text">Description</span>
               </label>
-              <div class={"min-w-[400px]"}>
+              <div class={"min-w-[200px] flex-shrink-0"}>
                 <TextField
                   placeholder="Description"
                   disabled={form.handler.origin === "msw"}
