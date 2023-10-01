@@ -40,6 +40,7 @@ const [loading, setLoading] = createSignal(true);
 worker.start().then((res) => setTimeout(() => setLoading(false), 500));
 
 export function App() {
+  const [enabled, setEnabled] = createSignal(true);
   const [routes, setRoutes] = createStore<EnhancedDevtoolsRoute[]>(
     buildSerializedRouteHandlers(worker.listHandlers()),
   );
@@ -62,7 +63,7 @@ export function App() {
     >
       <DevtoolPanel
         controller={{
-          enabled: true,
+          enabled: enabled(),
           mocks: [],
           routes,
           onEditHandler(id, data) {
@@ -85,6 +86,8 @@ export function App() {
             console.log("setSkipMock", id, skip);
           },
           setEnabled(enabled: boolean) {
+            console.log("set enabled", enabled);
+            setEnabled(enabled);
             if (!enabled) {
               worker.stop();
             } else {

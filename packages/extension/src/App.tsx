@@ -22,7 +22,7 @@ import {
 const DevtoolPanel = lazy(() =>
   import("@mswjs-devtools/devtools").then((m) => ({
     default: m.DevtoolPanel,
-  }))
+  })),
 );
 
 const App: Component = () => {
@@ -56,17 +56,17 @@ const App: Component = () => {
             setEnabled(initialized);
           }
         },
-        "content-script"
+        "content-script",
       ),
       devtoolsMessenger.on(
         "BRIDGE_MSW_START",
         () => setEnabled(true),
-        "content-script"
+        "content-script",
       ),
       devtoolsMessenger.on(
         "BRIDGE_MSW_STOP",
         () => setEnabled(false),
-        "content-script"
+        "content-script",
       ),
       devtoolsMessenger.on(
         "BRIDGE_MSW_UPDATE_HANDLERS",
@@ -74,13 +74,13 @@ const App: Component = () => {
           const { handlers } = payload;
           setHandlers(handlers);
         },
-        "content-script"
+        "content-script",
       ),
       devtoolsMessenger.on(
         "BRIDGE_MSW_UPDATE_MOCK_CONFIGURATION",
         ({ payload }) => setMockConfigurations(payload.mocksConfig),
-        "content-script"
-      )
+        "content-script",
+      ),
     );
 
     devtoolsMessenger.dispatch("DEVTOOLS_MOUNT", undefined, "content-script");
@@ -92,14 +92,14 @@ const App: Component = () => {
     devtoolsMessenger.dispatch(
       "DEVTOOLS_MSW_STOP",
       undefined,
-      "content-script"
+      "content-script",
     );
 
   const start = () => {
     devtoolsMessenger.dispatch(
       "DEVTOOLS_MSW_START",
       undefined,
-      "content-script"
+      "content-script",
     );
   };
 
@@ -118,20 +118,20 @@ const App: Component = () => {
     });
 
   const onCreateHandler = (
-    data: MswDevtoolsEventData["DEVTOOLS_CREATE_HANDLER"]
+    data: MswDevtoolsEventData["DEVTOOLS_CREATE_HANDLER"],
   ) => {
     devtoolsMessenger.dispatch("DEVTOOLS_CREATE_HANDLER", data);
   };
 
   const onDeleteHandler = (
-    data: MswDevtoolsEventData["DEVTOOLS_DELETE_HANDLER"]
+    data: MswDevtoolsEventData["DEVTOOLS_DELETE_HANDLER"],
   ) => {
     devtoolsMessenger.dispatch("DEVTOOLS_DELETE_HANDLER", data);
   };
 
   const onEditHandler = (
     id: string,
-    data: MswDevtoolsEventData["DEVTOOLS_UPDATE_ROUTE"] | any
+    data: MswDevtoolsEventData["DEVTOOLS_UPDATE_ROUTE"] | any,
   ) => {
     devtoolsMessenger.dispatch("DEVTOOLS_UPDATE_ROUTE", data);
   };
@@ -163,6 +163,7 @@ const App: Component = () => {
                   setSkipMock(id, skip);
                 },
                 setEnabled(enabled: boolean) {
+                  setEnabled(enabled);
                   if (enabled) {
                     start();
                   } else {

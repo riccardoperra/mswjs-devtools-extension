@@ -6,7 +6,7 @@ import { RoutesHandler } from "./pages/RoutesHandler/RoutesHandler";
 import * as styles from "./DevtoolPanel.css";
 import "./ui/global.css";
 import { Box } from "./components/Box/Box";
-import { Button } from "@codeui/kit";
+import { Button, Checkbox } from "@codeui/kit";
 
 interface DevtoolPanel {
   controller: DevToolPanelController;
@@ -31,20 +31,17 @@ export function DevtoolPanel(props: VoidProps<DevtoolPanel>) {
           alignItems={"center"}
           width={"full"}
         >
-          <div class="form-control">
-            <label class="label cursor-pointer">
-              <input
-                type="checkbox"
-                class="toggle"
-                checked={props.controller.enabled}
-                onChange={(evt) =>
-                  props.controller.setEnabled(evt.currentTarget.checked)
-                }
-              />
-              <span class="ml-4 label-text font-bold">
-                Enable MockServiceWorker
-              </span>
-            </label>
+          <div class="flex flex-row items-center">
+            {/* TODO: add codeui switch */}
+            <Checkbox
+              checked={props.controller.enabled}
+              onChange={(checked) => {
+                props.controller.setEnabled(checked);
+              }}
+            />
+            <span class="ml-1 text-md font-bold select-none">
+              Enable MockServiceWorker
+            </span>
           </div>
           <Box marginLeft={"auto"}>
             <Button

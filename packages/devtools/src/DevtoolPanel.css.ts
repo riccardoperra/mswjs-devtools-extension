@@ -6,6 +6,7 @@ export const wrapper = style({
   overflow: "hidden",
   display: "flex",
   flexDirection: "column",
+  color: "rgb(204, 204, 204)",
 });
 
 export const header = style({
