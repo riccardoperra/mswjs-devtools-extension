@@ -1,6 +1,6 @@
 import { For, VoidProps } from "solid-js";
 import { SerializedMockConfig } from "@mswjs-devtools/shared";
-import { Checkbox } from "../../components/Checkbox";
+import { Checkbox } from "@codeui/kit";
 import { ScrollableWrapper } from "../../components/ScrollableWrapper/ScrollableWrapper";
 
 interface MockConfigHandlerProps {
@@ -24,7 +24,7 @@ export function MockConfigHandler(props: VoidProps<MockConfigHandlerProps>) {
                     <Checkbox
                       checked={!mock.skip}
                       onChange={(checked) =>
-                        props.setSkipMock(mock.id, !checked)
+                        props.setSkipMock(mock.id, checked)
                       }
                     />
                     <span class="label-text ml-4 normal-case">

@@ -57,7 +57,7 @@ export function createRouteForm() {
     deleteHandler(index: number) {
       batch(() => {
         setForm("handlers", (handlers) =>
-          handlers.filter((_, i) => i !== index)
+          handlers.filter((_, i) => i !== index),
         );
         setForm("selectedHandler", form.handlers.length - 1);
       });
@@ -89,7 +89,7 @@ export function createRouteForm() {
         "handlers",
         selectedHandlerIndex(),
         "response",
-        formattedResponse
+        formattedResponse,
       );
     },
 

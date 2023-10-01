@@ -1,5 +1,5 @@
-import { createSignal, For, Show, VoidProps } from "solid-js";
-import { Checkbox } from "../../components/Checkbox";
+import { createSignal, For, mapArray, Show, VoidProps } from "solid-js";
+import { Checkbox, createSelectOptions, Select } from "@codeui/kit";
 import { DevtoolsRoute } from "@mswjs-devtools/shared";
 import { CreateRouteHandlerForm } from "./CreateRouteForm/CreateRouteHandlerForm";
 import { ScrollableWrapper } from "../../components/ScrollableWrapper/ScrollableWrapper";
@@ -37,46 +37,52 @@ export function RoutesHandler(props: VoidProps<RoutesProps>) {
       <ScrollableWrapper>
         <For each={props.routes}>
           {(route) => {
+            const formHandlers = mapArray(
+              () => route.handlers,
+              (handler, index) =>
+                ({
+                  ...handler,
+                  label: `Response ${index()} (${handler.status}) - ${
+                    handler.description || "No description"
+                  }`,
+                  value: index(),
+                }) as const,
+            );
+
+            const handlersSelectOptions = createSelectOptions(formHandlers, {
+              key: "label",
+              valueKey: "value",
+            });
+
             return (
               <div class="py-2 flex items-center border-b border-base-content border-opacity-25">
                 <div class="flex w-full items-center gap-4">
                   <Checkbox
                     checked={!route.skip}
                     onChange={(checked) =>
-                      props.setSkipRoute(route.id, !checked)
+                      props.setSkipRoute(route.id, checked)
                     }
                   />
-
                   <RouteInfoLabel
                     method={route.method as any}
                     label={route.url ?? ""}
                   />
-
-                  <select
-                    class={"select select-xs select-bordered"}
-                    onChange={(event) => {
-                      props.editHandler(route.id, {
-                        ...route,
-                        selectedHandler: parseInt(
-                          event.currentTarget.value,
-                          10
-                        ),
-                      });
-                    }}
-                  >
-                    <For each={route.handlers}>
-                      {(handler, index) => (
-                        <option
-                          selected={index() === route.selectedHandler}
-                          value={index()}
-                        >
-                          Response {index} ({handler.status}) -{" "}
-                          {handler.description || "No description"}
-                        </option>
-                      )}
-                    </For>
-                  </select>
-
+                  {/*// TODO fix*/}
+                  <Select
+                    aria-label={"Selected handler"}
+                    multiple={false}
+                    size={"xs"}
+                    {...handlersSelectOptions.props()}
+                    {...handlersSelectOptions.controlled(
+                      () => route.selectedHandler ?? 0,
+                      (value) =>
+                        props.editHandler(route.id, {
+                          ...route,
+                          selectedHandler: value,
+                        }),
+                    )}
+                    options={handlersSelectOptions.options()}
+                  />
                   <Show when={route.custom}>
                     <span
                       class={
@@ -86,7 +92,6 @@ export function RoutesHandler(props: VoidProps<RoutesProps>) {
                       Custom
                     </span>
                   </Show>
-
                   <div class="flex gap-2 ml-auto">
                     <button
                       class="btn btn-sm btn-ghost btn-circle"
