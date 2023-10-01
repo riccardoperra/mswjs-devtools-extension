@@ -55,7 +55,7 @@ export function RoutesHandler(props: VoidProps<RoutesProps>) {
             });
 
             return (
-              <div class="py-2 flex items-center border-b border-base-content border-opacity-25">
+              <div class="py-2 flex items-center border-b border-neutral-700">
                 <div class="flex w-full items-center gap-4">
                   <Checkbox
                     checked={!route.skip}

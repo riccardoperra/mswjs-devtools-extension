@@ -39,9 +39,9 @@ export function HandlerForm() {
               "px-4 py-2 flex gap-2 bg-neutral-900 shadow rounded-tl-lg rounded-tr-lg flex-wrap"
             }
           >
-            <div class="form-control flex-row items-center gap-2">
+            <div class="flex flex-row items-center gap-2">
               <label class="label">
-                <span class="label-text">Status</span>
+                <span class="text-sm">Status</span>
               </label>
               <div class={"w-[300px]"}>
                 <Select
@@ -58,12 +58,13 @@ export function HandlerForm() {
               </div>
             </div>
 
-            <div class="form-control flex-row items-center gap-2">
+            <div class="flex flex-row items-center gap-2 ml-2">
               <label class="label">
-                <span class="label-text">Description</span>
+                <span class="text-sm">Description</span>
               </label>
               <div class={"min-w-[200px] flex-shrink-0"}>
                 <TextField
+                  size={"sm"}
                   placeholder="Description"
                   disabled={form.handler.origin === "msw"}
                   value={form.handler.description}
@@ -72,12 +73,13 @@ export function HandlerForm() {
               </div>
             </div>
 
-            <div class="form-control flex-row items-center gap-2">
+            <div class="flex flex-row items-center gap-2 ml-2">
               <label class="label">
-                <span class="label-text">Delay (ms)</span>
+                <span class="text-sm">Delay (ms)</span>
               </label>
               <div class={"w-[150px]"}>
                 <TextField
+                  size={"sm"}
                   ref={(el) =>
                     setTimeout(() => {
                       // TODO: add type number field
@@ -98,12 +100,10 @@ export function HandlerForm() {
 
           <div
             class={
-              "px-4 border-y border-opacity-20 border-base-content flex items-center"
+              "px-4 py-1 border-y border-neutral-700 flex items-center bg-neutral-900"
             }
           >
-            <label class="label">
-              <span class="label-text">Response body</span>
-            </label>
+            <span class="text-sm">Response body</span>
             <div class={"ml-auto"}>
               <Show
                 fallback={

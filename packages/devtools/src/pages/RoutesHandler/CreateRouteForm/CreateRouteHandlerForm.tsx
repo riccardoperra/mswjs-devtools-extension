@@ -67,7 +67,7 @@ export function CreateRouteHandlerForm(props: CreateRouteHandlerFormProps) {
   return (
     <div
       class={
-        "w-[100%] h-[100%] absolute bg-base-200 w-full bottom-0 right-0 flex flex-col z-20"
+        "w-[100%] h-[100%] absolute bg-neutral-950 w-full bottom-0 right-0 flex flex-col z-20"
       }
     >
       <div class="px-4 py-2 flex items-center justify-between shadow-lg border-t border-base-300">
